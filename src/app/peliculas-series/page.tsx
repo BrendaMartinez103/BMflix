@@ -1,3 +1,5 @@
+import React from 'react'; 
+
 export default function PeliculasSeriesPage() {
   return (
     <main className="container py-5">
@@ -6,3 +8,6 @@ export default function PeliculasSeriesPage() {
     </main>
   );
 }
+
+
+export {};
