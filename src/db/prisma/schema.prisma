@@ -1,0 +1,106 @@
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Language {
+  id      Int      @id @default(autoincrement())
+  code    String   @unique      // ej: "es", "en"
+  name    String               // ej: "Español"
+  movies  Movie[]
+  series  Series[]
+}
+
+model Person {
+  id       Int          @id @default(autoincrement())
+  name     String
+  // relaciones
+  series   SeriesCast[]
+  movies   MovieCast[]
+}
+
+model Series {
+  id                   Int        @id @default(autoincrement())
+  name                 String
+  startYear            Int        // año de creación
+  endYear              Int?       // año de finalización (null si sigue)
+  description          String
+  originalLanguageId   Int
+  originalLanguage     Language   @relation(fields: [originalLanguageId], references: [id])
+  posterUrl            String?    // imagen
+  rating               Decimal?   @db.Decimal(3,1) // "puntaje" promedio 0.0–9.9
+  seasons            Season[]  
+  episodes             Episode[]
+  cast                 SeriesCast[]
+
+  @@index([name])
+}
+
+model Season {
+  id        Int     @id @default(autoincrement())
+  seriesId  Int
+  number    Int      // nro de temporada
+  year      Int?     // opcional
+  series    Series   @relation(fields: [seriesId], references: [id])
+
+  episodes  Episode[]
+
+  @@unique([seriesId, number])
+}
+
+model Episode {
+  id            Int    @id @default(autoincrement())
+  seriesId      Int
+  seasonId      Int
+  seasonNumber  Int
+  episodeNumber Int
+  title         String // nombre del capítulo
+
+  series        Series @relation(fields: [seriesId], references: [id])
+  season        Season @relation(fields: [seasonId], references: [id])
+
+  @@unique([seriesId, seasonNumber, episodeNumber])
+  @@index([seriesId, seasonNumber])
+}
+
+model SeriesCast {
+  seriesId Int
+  personId Int
+  role     String? // nombre del personaje (opcional)
+
+  series   Series @relation(fields: [seriesId], references: [id])
+  person   Person @relation(fields: [personId], references: [id])
+
+  @@id([seriesId, personId])
+}
+
+model Movie {
+  id                  Int       @id @default(autoincrement())
+  name                String
+  releaseYear         Int       // año de estreno
+  description         String
+  originalLanguageId  Int
+  originalLanguage    Language  @relation(fields: [originalLanguageId], references: [id])
+  posterUrl           String?   // imagen
+  rating              Decimal?  @db.Decimal(3,1) // puntaje
+  cast                MovieCast[]
+
+  @@index([name])
+}
+
+model MovieCast {
+  movieId Int
+  personId Int
+  role     String?
+
+  movie    Movie  @relation(fields: [movieId], references: [id])
+  person   Person @relation(fields: [personId], references: [id])
+
+  @@id([movieId, personId])
+}
