@@ -11,12 +11,12 @@ export const metadata = {
   openGraph: {
     images: [
       {
-        url: URL + '/icon.png',
+        url: URL + '/logo.png',
         width: 800,
         height: 600,
       },
       {
-        url: URL + '/icon.png',
+        url: URL + '/logo.png',
         width: 1800,
         height: 1600,
       },
@@ -24,10 +24,7 @@ export const metadata = {
     locale: 'es_AR',
     type: 'website',
   },
-  icons: {
-    shortcut: URL + '/favicon.ico',
-    apple: URL + '/favicon-32x32.png',
-  },
+
 }
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 
