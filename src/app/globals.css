@@ -54,12 +54,33 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* Navbar */
-.navbar {
-  background-color: #000;
+.navbar-bm{
+  background:var(--background) !important;
+  border-bottom:1px solid var(--border);
 }
-.navbar .nav-link {
-  color: #d0f0ff !important;
+.navbar-bm .nav-link{
+  color:var(--foreground) !important;
+  letter-spacing:.02em;
 }
-.navbar .nav-link:hover {
-  color: #00cfff !important;
+.navbar-bm .nav-link:hover{ color:var(--primary) !important; }
+
+/* Top bar */
+.topbar-bm{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  color:var(--foreground);
+}
+
+/* Offcanvas */
+.offcanvas-bm{
+  background:var(--surface);
+  color:var(--foreground);
+  border-left:1px solid var(--border);
+}
+.offcanvas-bm .nav-link{ color:var(--foreground); }
+.offcanvas-bm .nav-link:hover{ color:var(--primary); }
+
+/* Botón cierre */
+.btn-close{
+  filter: invert(1); /* visible en fondo oscuro */
 }
