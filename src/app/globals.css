@@ -1,0 +1,65 @@
+/* Reset básico y tipografía */
+html, body {
+  background-color: #000; /* Fondo negro */
+  color: #d0f0ff;         /* Texto celeste claro */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Links */
+a {
+  color: #00cfff; /* Celeste brillante */
+  text-decoration: none;
+}
+a:hover {
+  color: #66e0ff; /* Celeste más claro en hover */
+  text-decoration: underline;
+}
+
+/* Botones de Bootstrap personalizados */
+.btn-primary {
+  background-color: #00cfff;
+  border-color: #00cfff;
+  color: #000;
+}
+.btn-primary:hover {
+  background-color: #66e0ff;
+  border-color: #66e0ff;
+  color: #000;
+}
+
+/* Encabezados */
+h1, h2, h3, h4, h5, h6 {
+  color: #00cfff;
+}
+
+/* Bordes y tarjetas */
+.card {
+  background-color: #0d0d0d;
+  border: 1px solid #00cfff;
+  color: #d0f0ff;
+}
+
+/* Formularios */
+input, select, textarea {
+  background-color: #0d0d0d;
+  border: 1px solid #00cfff;
+  color: #d0f0ff;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #66e0ff;
+  box-shadow: 0 0 5px #66e0ff;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #000;
+}
+.navbar .nav-link {
+  color: #d0f0ff !important;
+}
+.navbar .nav-link:hover {
+  color: #00cfff !important;
+}
