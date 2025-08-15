@@ -22,7 +22,6 @@ export default async function PeliculasSeriesPage() {
   return (
     <main className="container py-5">
       {/* header + botones ... */}
-
       <div className="row g-3">
         {feed.map((c) => {
           const href =
@@ -33,7 +32,8 @@ export default async function PeliculasSeriesPage() {
               : '#';
 
           const title = c.name || c.series?.name || c.movie?.name || 'Contenido';
-          const poster = c.posterUrl || '/logo.png';
+          const poster = c.posterUrl || '/logo.png';   
+          
           const badge = c.category === 'SERIES' ? 'Serie' : 'Película';
           const lang = c.originalLanguage?.code?.toUpperCase();
           const ratingNumber = c.rating != null ? Number(c.rating) : null;
@@ -43,8 +43,14 @@ export default async function PeliculasSeriesPage() {
             <div className="card h-100 bg-surface border-primary-soft">
               {/* Enlace SOLO alrededor de la imagen */}
               <Link href={href} className="text-decoration-none">
-                <div className="ratio ratio-2x3 position-relative">
-                  
+               <div className="position-relative w-100" style={{ aspectRatio: '2 / 3' }}>
+                  <Image
+                    src={poster} 
+                    alt={title}
+                    fill
+                    className="object-cover rounded-top"
+                    sizes="(max-width: 768px) 50vw, 20vw"
+                  />
                   <span
                     className="position-absolute top-0 start-0 m-2 badge"
                     style={{ backgroundColor: 'var(--primary)', color: '#000' }}

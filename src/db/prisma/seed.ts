@@ -3,70 +3,69 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  // Idioma inglés
-  const english = await prisma.language.upsert({
-    where: { code: 'en' },
-    update: {},
-    create: {
-      code: 'en',
-      name: 'English',
-    },
-  });
+ const languages = [
+  { code: 'en', name: 'English' },
+  { code: 'es', name: 'Español' },
+  { code: 'ko', name: '한국어' },       // coreano
+  { code: 'ch', name: '中文' },        // chino
+];
+const byCode: Record<string, { id: number }> = {};
 
-  // Serie: Breaking Bad
-  const breakingBad = await prisma.series.create({
+for (const l of languages) {
+  const lang = await prisma.language.upsert({
+    where: { code: l.code }, update: {}, create: l,
+  });
+  byCode[l.code] = { id: lang.id };
+}
+//------------------ SERIES ------------------
+  const BreakingBad = await prisma.series.create({
     data: {
       name: 'Breaking Bad',
       startYear: 2008,
       endYear: 2013,
       description:
-        'Un profesor de química se convierte en fabricante de metanfetaminas para asegurar el futuro de su familia.',
-      originalLanguageId: english.id,
-      posterUrl:
-        'https://upload.wikimedia.org/wikipedia/en/6/61/Breaking_Bad_title_card.png',
+        'Un profesor de química con problemas económicos a quien le diagnostican un cáncer de pulmón inoperable. Para pagar su tratamiento y asegurar el futuro económico de su familia, comienza a cocinar y vender metanfetamina',
+      originalLanguageId: byCode['en'].id, 
+      posterUrl: '/posters/breaking-bad.png',
       rating: 9.5,
     },
   });
 
-  // Película: Inception
+    await prisma.content.create({
+    data: {
+      category: 'SERIES',
+      seriesId: BreakingBad.id,
+      name: BreakingBad.name,
+      posterUrl: BreakingBad.posterUrl,
+      rating: BreakingBad.rating,
+      originalLanguageId: byCode['en'].id, 
+    },
+  });
+
+//------------------ PELICULAS ------------------
   const inception = await prisma.movie.create({
     data: {
       name: 'Inception',
       releaseYear: 2010,
       description:
         'Un ladrón que roba secretos corporativos a través de tecnología de sueños es asignado a implantar una idea en la mente de un CEO.',
-      originalLanguageId: english.id,
-      posterUrl:
-        'https://upload.wikimedia.org/wikipedia/en/7/7f/Inception_ver3.jpg',
+      originalLanguageId: byCode['en'].id, 
+      posterUrl: null,
       rating: 8.8,
     },
   });
 
-  // Content para la serie
-  await prisma.content.create({
-    data: {
-      category: 'SERIES',
-      seriesId: breakingBad.id,
-      name: breakingBad.name,
-      posterUrl: breakingBad.posterUrl,
-      rating: breakingBad.rating,
-      originalLanguageId: english.id,
-    },
-  });
-
-  // Content para la película
-  await prisma.content.create({
+    await prisma.content.create({
     data: {
       category: 'MOVIE',
       movieId: inception.id,
       name: inception.name,
       posterUrl: inception.posterUrl,
       rating: inception.rating,
-      originalLanguageId: english.id,
+      originalLanguageId: byCode['en'].id, 
     },
   });
 
-  console.log('✅ Seed completado.');
 }
 
 main()

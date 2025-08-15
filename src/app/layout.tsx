@@ -6,6 +6,7 @@ import type { Metadata } from 'next'
 import OffcanvasNavbar from './components/offcanvas'
 
 export const metadata = {
+  metadataBase: new URL('https://bmflix.vercel.app'),
   title: 'BMflix',
   description: 'App con Bootstrap y Next.js',
   openGraph: {
