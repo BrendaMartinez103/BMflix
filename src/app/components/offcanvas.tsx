@@ -31,7 +31,7 @@ export default function OffcanvasNavbar({
       {/* Top Bar */}
       <div className="topbar-bm py-2">
         <div className="container d-flex justify-content-between align-items-center">
-          <p className="mb-0 small fw-medium text-primary">Compra de Servicios</p>
+          <p className="mb-0 small fw-medium text-primary">BMflix</p>
         </div>
       </div>
 

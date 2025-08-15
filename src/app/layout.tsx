@@ -1,4 +1,4 @@
-// app/layout.tsx
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css'; 
 import type React from 'react'

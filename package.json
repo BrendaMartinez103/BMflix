@@ -12,6 +12,7 @@
     "db:studio": "prisma studio",
     "db:deploy": "prisma migrate deploy",
     "db:push": "prisma db push",
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} src/db/prisma/seed.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -27,11 +28,12 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "prisma": "^6.14.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.4",
     "typescript": "latest"
   },
-
   "prisma": {
-    "schema": "src/db/prisma/schema.prisma"
+    "schema": "src/db/prisma/schema.prisma",
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} src/db/prisma/seed.ts"
   }
-
 }

@@ -1,7 +1,5 @@
-
 generator client {
   provider = "prisma-client-js"
-  
 }
 
 datasource db {
@@ -9,47 +7,76 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ContentCategory {
+  SERIES
+  MOVIE
+}
+
+model Content {
+  id       Int             @id @default(autoincrement())
+  category ContentCategory
+
+  // relación exclusiva: o apunta a una serie o a una película
+  seriesId Int?    @unique
+  movieId  Int?    @unique
+  series   Series? @relation(fields: [seriesId], references: [id])
+  movie    Movie?  @relation(fields: [movieId], references: [id])
+
+  name               String
+  posterUrl          String?
+  rating             Decimal?  @db.Decimal(3, 1)
+  originalLanguageId Int?
+  originalLanguage   Language? @relation(fields: [originalLanguageId], references: [id])
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  ratings            Rating[]
+
+  @@index([category])
+}
+
 model Language {
-  id      Int      @id @default(autoincrement())
-  code    String   @unique      // ej: "es", "en"
-  name    String               // ej: "Español"
-  movies  Movie[]
-  series  Series[]
+  id       Int       @id @default(autoincrement())
+  code     String    @unique // ej: "es", "en"
+  name     String // ej: "Español"
+  movies   Movie[]
+  series   Series[]
+  contents Content[]
 }
 
 model Person {
-  id       Int          @id @default(autoincrement())
-  name     String
+  id     Int          @id @default(autoincrement())
+  name   String       @unique
   // relaciones
-  series   SeriesCast[]
-  movies   MovieCast[]
+  series SeriesCast[]
+  movies MovieCast[]
 }
 
 model Series {
-  id                   Int        @id @default(autoincrement())
-  name                 String
-  startYear            Int        // año de creación
-  endYear              Int?       // año de finalización (null si sigue)
-  description          String
-  originalLanguageId   Int
-  originalLanguage     Language   @relation(fields: [originalLanguageId], references: [id])
-  posterUrl            String?    // imagen
-  rating               Decimal?   @db.Decimal(3,1) // "puntaje" promedio 0.0–9.9
-  seasons            Season[]  
-  episodes             Episode[]
-  cast                 SeriesCast[]
+  id                 Int          @id @default(autoincrement())
+  name               String
+  startYear          Int // año de creación
+  endYear            Int? // año de finalización (null si sigue)
+  description        String
+  originalLanguageId Int
+  originalLanguage   Language     @relation(fields: [originalLanguageId], references: [id])
+  posterUrl          String? // imagen
+  rating             Decimal?     @db.Decimal(3, 1) // "puntaje" promedio 0.0–9.9
+  seasons            Season[]
+  episodes           Episode[]
+  cast               SeriesCast[]
+  content            Content?
 
   @@index([name])
 }
 
 model Season {
-  id        Int     @id @default(autoincrement())
-  seriesId  Int
-  number    Int      // nro de temporada
-  year      Int?     // opcional
-  series    Series   @relation(fields: [seriesId], references: [id])
+  id       Int    @id @default(autoincrement())
+  seriesId Int
+  number   Int // nro de temporada
+  year     Int? // opcional
+  series   Series @relation(fields: [seriesId], references: [id])
 
-  episodes  Episode[]
+  episodes Episode[]
 
   @@unique([seriesId, number])
 }
@@ -62,8 +89,8 @@ model Episode {
   episodeNumber Int
   title         String // nombre del capítulo
 
-  series        Series @relation(fields: [seriesId], references: [id])
-  season        Season @relation(fields: [seasonId], references: [id])
+  series Series @relation(fields: [seriesId], references: [id])
+  season Season @relation(fields: [seasonId], references: [id])
 
   @@unique([seriesId, seasonNumber, episodeNumber])
   @@index([seriesId, seasonNumber])
@@ -74,33 +101,49 @@ model SeriesCast {
   personId Int
   role     String? // nombre del personaje (opcional)
 
-  series   Series @relation(fields: [seriesId], references: [id])
-  person   Person @relation(fields: [personId], references: [id])
+  series Series @relation(fields: [seriesId], references: [id])
+  person Person @relation(fields: [personId], references: [id])
 
   @@id([seriesId, personId])
 }
 
 model Movie {
-  id                  Int       @id @default(autoincrement())
-  name                String
-  releaseYear         Int       // año de estreno
-  description         String
-  originalLanguageId  Int
-  originalLanguage    Language  @relation(fields: [originalLanguageId], references: [id])
-  posterUrl           String?   // imagen
-  rating              Decimal?  @db.Decimal(3,1) // puntaje
-  cast                MovieCast[]
+  id                 Int         @id @default(autoincrement())
+  name               String
+  releaseYear        Int // año de estreno
+  description        String
+  originalLanguageId Int
+  originalLanguage   Language    @relation(fields: [originalLanguageId], references: [id])
+  posterUrl          String? // imagen
+  rating             Decimal?    @db.Decimal(3, 1) // puntaje
+  cast               MovieCast[]
+  content            Content?
 
   @@index([name])
 }
 
 model MovieCast {
-  movieId Int
+  movieId  Int
   personId Int
   role     String?
 
-  movie    Movie  @relation(fields: [movieId], references: [id])
-  person   Person @relation(fields: [personId], references: [id])
+  movie  Movie  @relation(fields: [movieId], references: [id])
+  person Person @relation(fields: [personId], references: [id])
 
   @@id([movieId, personId])
+}
+
+model Rating {
+  id        Int     @id @default(autoincrement())
+  contentId Int
+  clientId  String // ID anónimo (cookie)
+  score     Decimal @db.Decimal(3, 1)
+
+  content Content @relation(fields: [contentId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([contentId, clientId]) // 1 voto por visitante y contenido
+  @@index([contentId])
 }
