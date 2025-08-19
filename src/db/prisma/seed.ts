@@ -9,6 +9,7 @@ async function main() {
     { code: 'es', name: 'Español' },
     { code: 'ko', name: '한국어' },
     { code: 'zh', name: '中文' },
+    { code: 'de', name: 'Deutsch' },
   ];
   const byCode: Record<string, { id: number }> = {};
   for (const l of languages) {
@@ -21,7 +22,7 @@ async function main() {
   }
 
   // ---------- Genres ----------
-  const genres = ['Drama', 'Crimen', 'Ciencia Ficción', 'Suspenso', 'Policial'];
+  const genres = ['Drama', 'Crimen', 'Ciencia Ficción', 'Suspenso', 'Policial' , 'Biográfica', 'Comedia', 'Basada en hechos reales'];
   const genreMap: Record<string, { id: number }> = {};
   for (const g of genres) {
     const genre = await prisma.genre.upsert({
@@ -294,6 +295,258 @@ async function main() {
       posterUrl: htgawm.posterUrl ?? '/posters/htgawm.png',
       rating: htgawm.rating ?? undefined,
       originalLanguageId: byCode['en'].id,
+    },
+  });
+
+  // =========================================================
+  //                     SERIES: Apache: La vida de Carlos Tevez
+  // =========================================================
+  const TevezSeasonsData = [
+    { number: 1, episodesCount: 8,  year: 2019 },
+  ];
+  const TevezTotalSeasons = TevezSeasonsData.length;
+  const TevezTotalEpisodes = TevezSeasonsData.reduce((acc, s) => acc + s.episodesCount, 0);
+
+  // upsert de la serie
+  const Tevez = await prisma.series.upsert({
+    where: { name: 'Apache: La vida de Carlos Tevez' },
+    update: {
+      startYear: 2019,
+      endYear: 2019,
+      description:
+        'La vida de Carlos Tevez, un famoso futbolista argentino, desde sus humildes comienzos hasta su ascenso a la fama.',
+      director: '	Leonardo De Pinto',
+      protagonists: ['	Balthazar Murillo, Vanesa González, Alberto Ajaka, Sofía Gala Castiglione, Matías Recalt, Osqui Guzmán, Diego Gallardo'],
+      comentarioBM: 'No me suelen encantar las series autobiograficas pero esta en particular me gustó mucho.NOTA-> 7.5 ',
+      totalSeasons: TevezTotalSeasons,
+      totalEpisodes: TevezTotalEpisodes,
+      originalLanguageId: byCode['de'].id,
+      posterUrl: '/posters/Tevez.png',
+      rating: 7.5,
+      genres: {
+        set: [], // limpia relaciones 
+        connect: [
+          { id: genreMap['Drama'].id },
+          { id: genreMap['Biográfica'].id },
+        ],
+      },
+    },
+    create: {
+      name: 'Apache: La vida de Carlos Tevez',
+      startYear: 2019,
+      endYear: 2019,
+      description:
+        'La vida de Carlos Tevez, un famoso futbolista argentino, desde sus humildes comienzos hasta su ascenso a la fama.',
+      director: 'Leonardo De Pinto',
+      protagonists: ['Balthazar Murillo, Vanesa González, Alberto Ajaka, Sofía Gala Castiglione, Matías Recalt, Osqui Guzmán, Diego Gallardo'],
+      comentarioBM: 'No me suelen encantar las series autobiograficas pero esta en particular me gustó mucho.NOTA-> 7.5 ',
+      totalSeasons: TevezTotalSeasons,
+      totalEpisodes: TevezTotalEpisodes,
+      originalLanguageId: byCode['es'].id,
+      posterUrl: '/posters/Tevez.png',
+      rating: 7.5,
+      genres: {
+        connect: [
+          { id: genreMap['Drama'].id },
+          { id: genreMap['Biográfica'].id },
+        ],
+      },
+    },
+  });
+
+  // upsert de Temporadas (usa @@unique([seriesId, number]))
+  for (const s of TevezSeasonsData) {
+    await prisma.season.upsert({
+      where: { seriesId_number: { seriesId: Tevez.id, number: s.number } },
+      update: { episodesCount: s.episodesCount, year: s.year },
+      create: { seriesId: Tevez.id, ...s },
+    });
+  }
+
+  // Content para la serie (para grillas)
+  await prisma.content.upsert({
+    where: { seriesId: Tevez.id },
+    update: {
+      name: Tevez.name,
+      posterUrl: Tevez.posterUrl ?? '/posters/Tevez.png',
+      rating: Tevez.rating ?? undefined,
+      originalLanguageId: byCode['es'].id,
+    },
+    create: {
+      category: 'SERIES',
+      seriesId: Tevez.id,
+      name: Tevez.name,
+      posterUrl: Tevez.posterUrl ?? '/posters/Tevez.png',
+      rating: Tevez.rating ?? undefined,
+      originalLanguageId: byCode['es'].id,
+    },
+  });
+
+  // =========================================================
+  //                     SERIES: Mindfulness para asesinos
+  // =========================================================
+  const MindfulnessSeasonsData = [
+    { number: 1, episodesCount: 8,  year: 2024 },
+  ];
+  const MindfulnessTotalSeasons = MindfulnessSeasonsData.length;
+  const MindfulnessTotalEpisodes = MindfulnessSeasonsData.reduce((acc, s) => acc + s.episodesCount, 0);
+
+  // upsert de la serie
+  const Mindfulness = await prisma.series.upsert({
+    where: { name: 'Mindfulness para asesinos' },
+    update: {
+      startYear: 2024,
+      endYear: 2024,
+      description:
+        'Björn, un abogado de mafiosos, asiste a una clase de mindfulness para lograr equilibrar su trabajo con su vida personal. Y aprende varias estrategias, como, por ejemplo, matar.',
+      director: 'Boris Kunz, Martina Plura, Max Zähle',
+      protagonists: ['Tom Schilling, Emily Cox, Peter Jordan, Murathan Muslu, Sascha Geršak, Britta Hammelstein, Marc Hosemann, Pamuk Pilavci y Johannes Allmayer'],
+      comentarioBM: 'Una serie entretenida para pasar el rato. NOTA-> 6 ',
+      totalSeasons: MindfulnessTotalSeasons,
+      totalEpisodes: MindfulnessTotalEpisodes,
+      originalLanguageId: byCode['de'].id,
+      posterUrl: '/posters/Mindfulness.png',
+      rating: 6,
+      genres: {
+        set: [], // limpia relaciones 
+        connect: [
+          { id: genreMap['Suspenso'].id },
+          { id: genreMap['Comedia'].id },
+        ],
+      },
+    },
+    create: {
+      name: 'Mindfulness para asesinos',
+      startYear: 2024,
+      endYear: 2024,
+     description:
+        'Björn, un abogado de mafiosos, asiste a una clase de mindfulness para lograr equilibrar su trabajo con su vida personal. Y aprende varias estrategias, como, por ejemplo, matar.',
+      director: 'Boris Kunz, Martina Plura, Max Zähle',
+      protagonists: ['Tom Schilling, Emily Cox, Peter Jordan, Murathan Muslu, Sascha Geršak, Britta Hammelstein, Marc Hosemann, Pamuk Pilavci y Johannes Allmayer'],
+      comentarioBM: 'Una serie entretenida para pasar el rato. NOTA-> 6 ',
+      totalSeasons: MindfulnessTotalSeasons,
+      totalEpisodes: MindfulnessTotalEpisodes,
+      originalLanguageId: byCode['de'].id,
+      posterUrl: '/posters/Mindfulness.png',
+      rating: 6,
+      genres: {
+        connect: [
+          { id: genreMap['Suspenso'].id },
+          { id: genreMap['Comedia'].id },
+        ],
+      },
+    },
+  });
+
+  // upsert de Temporadas (usa @@unique([seriesId, number]))
+  for (const s of MindfulnessSeasonsData) {
+    await prisma.season.upsert({
+      where: { seriesId_number: { seriesId: Mindfulness.id, number: s.number } },
+      update: { episodesCount: s.episodesCount, year: s.year },
+      create: { seriesId: Mindfulness.id, ...s },
+    });
+  }
+
+  // Content para la serie (para grillas)
+  await prisma.content.upsert({
+    where: { seriesId: Mindfulness.id },
+    update: {
+      name: Mindfulness.name,
+      posterUrl: Mindfulness.posterUrl ?? '/posters/Mindfulness.png',
+      rating: Mindfulness.rating ?? undefined,
+      originalLanguageId: byCode['de'].id,
+    },
+    create: {
+      category: 'SERIES',
+      seriesId: Mindfulness.id,
+      name: Mindfulness.name,
+      posterUrl: Mindfulness.posterUrl ?? '/posters/Mindfulness.png',
+      rating: Mindfulness.rating ?? undefined,
+      originalLanguageId: byCode['de'].id,
+    },
+  });
+
+    // =========================================================
+  //                     SERIES: Cromañón
+  // =========================================================
+  const CromañónSeasonsData = [
+    { number: 1, episodesCount: 8,  year: 2024 },
+  ];
+  const CromañónTotalSeasons = CromañónSeasonsData.length;
+  const CromañónTotalEpisodes = CromañónSeasonsData.reduce((acc, s) => acc + s.episodesCount, 0);
+
+  // upsert de la serie
+  const Cromañón = await prisma.series.upsert({
+    where: { name: 'Cromañón' },
+    update: {
+      startYear: 2024,
+      endYear: 2024,
+      description:
+        'Cromañón es una serie de televisión basada en hechos reales.​ La historia se centra en un grupo de amigos afectados por los sucesos ocurridos durante la masacre de Cromañón en 2004',
+      director: '	Fabiana Tiscornia, Marialy Rivas',
+      protagonists: ['Olivia Nuss, Toto Rovito, José Giménez Zapiola, Luis Machín, Soledad Villamil, Antonia Bengoechea, Lautaro Rodríguez,  Nicole Mottchouk Eloy Rossen'],
+      comentarioBM: 'Me esperaba mucho más de esta serie, te cuenta la historia del grupo de amigos, en vez de centrarse en la tragedia. NOTA-> 4 ',
+      totalSeasons: CromañónTotalSeasons,
+      totalEpisodes: CromañónTotalEpisodes,
+      originalLanguageId: byCode['es'].id,
+      posterUrl: '/posters/Cromañón.png',
+      rating: 4,
+      genres: {
+        set: [], // limpia relaciones 
+        connect: [
+          { id: genreMap['Drama'].id },
+          { id: genreMap['Basada en hechos reales'].id },
+        ],
+      },
+    },
+    create: {
+      name: 'Cromañón',
+      startYear: 2024,
+      endYear: 2024,
+      description:
+        'Cromañón es una serie de televisión basada en hechos reales.​ La historia se centra en un grupo de amigos afectados por los sucesos ocurridos durante la masacre de Cromañón en 2004',
+      director: '	Fabiana Tiscornia, Marialy Rivas',
+      protagonists: ['Olivia Nuss, Toto Rovito, José Giménez Zapiola, Luis Machín, Soledad Villamil, Antonia Bengoechea, Lautaro Rodríguez,  Nicole Mottchouk Eloy Rossen'],
+      comentarioBM: 'Me esperaba mucho más de esta serie, te cuenta la historia del grupo de amigos, en vez de centrarse en la tragedia. NOTA-> 4 ',
+      totalSeasons: CromañónTotalSeasons,
+      totalEpisodes: CromañónTotalEpisodes,
+      originalLanguageId: byCode['es'].id,
+      posterUrl: '/posters/Cromañón.png',
+      rating: 4,
+      genres: {
+        connect: [
+          { id: genreMap['Drama'].id },
+          { id: genreMap['Basada en hechos reales'].id },
+        ],
+      },
+    },
+  });
+
+  // upsert de Temporadas (usa @@unique([seriesId, number]))
+  for (const s of CromañónSeasonsData) {
+    await prisma.season.upsert({
+      where: { seriesId_number: { seriesId: Cromañón.id, number: s.number } },
+      update: { episodesCount: s.episodesCount, year: s.year },
+      create: { seriesId: Cromañón.id, ...s },
+    });
+  }
+
+  // Content para la serie (para grillas)
+  await prisma.content.upsert({
+    where: { seriesId: Cromañón.id },
+    update: {
+      name: Cromañón.name,
+      posterUrl: Cromañón.posterUrl ?? '/posters/Cromañón.png',
+      rating: Cromañón.rating ?? undefined,
+      originalLanguageId: byCode['es'].id,
+    },
+    create: {
+      category: 'SERIES',
+      seriesId: Cromañón.id,
+      name: Cromañón.name,
+      posterUrl: Cromañón.posterUrl ?? '/posters/Cromañón.png',
+      rating: Cromañón.rating ?? undefined,
+      originalLanguageId: byCode['es'].id,
     },
   });
   // =========================================================
