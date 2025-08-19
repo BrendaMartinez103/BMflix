@@ -43,7 +43,7 @@ export default async function PeliculasSeriesPage() {
             <div className="card h-100 bg-surface border-primary-soft">
               {/* Enlace SOLO alrededor de la imagen */}
               <Link href={href} className="text-decoration-none">
-               <div className="position-relative w-100" style={{ aspectRatio: '2 / 3' }}>
+               <div className="position-relative w-100" style={{ aspectRatio: '3 / 3' }}>
                   <Image
                     src={poster} 
                     alt={title}

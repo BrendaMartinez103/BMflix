@@ -37,106 +37,85 @@ model Content {
 model Language {
   id       Int       @id @default(autoincrement())
   code     String    @unique // ej: "es", "en"
-  name     String // ej: "Español"
+  name     String    // ej: "Español"
   movies   Movie[]
   series   Series[]
   contents Content[]
 }
 
-model Person {
-  id     Int          @id @default(autoincrement())
-  name   String       @unique
-  // relaciones
-  series SeriesCast[]
-  movies MovieCast[]
+model Genre {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  series Series[] @relation("SeriesGenres")
+  movies Movie[]  @relation("MovieGenres")
 }
 
 model Series {
-  id                 Int          @id @default(autoincrement())
-  name               String
-  startYear          Int // año de creación
-  endYear            Int? // año de finalización (null si sigue)
+  id                 Int       @id @default(autoincrement())
+  name               String    @unique
+  startYear          Int
+  endYear            Int?
   description        String
+  director           String?
+  protagonists       String[]  // lista de protagonistas
+  comentarioBM       String?   // opinión personal opcional
+  totalSeasons       Int?    // cantidad total de temporadas
+  totalEpisodes      Int?     // cantidad total de episodios
   originalLanguageId Int
-  originalLanguage   Language     @relation(fields: [originalLanguageId], references: [id])
-  posterUrl          String? // imagen
-  rating             Decimal?     @db.Decimal(3, 1) // "puntaje" promedio 0.0–9.9
+  originalLanguage   Language  @relation(fields: [originalLanguageId], references: [id])
+  posterUrl          String?
+  rating             Decimal?  @db.Decimal(3, 1)
   seasons            Season[]
-  episodes           Episode[]
-  cast               SeriesCast[]
   content            Content?
+  genres             Genre[]   @relation("SeriesGenres")
 
   @@index([name])
 }
 
 model Season {
-  id       Int    @id @default(autoincrement())
-  seriesId Int
-  number   Int // nro de temporada
-  year     Int? // opcional
-  series   Series @relation(fields: [seriesId], references: [id])
-
-  episodes Episode[]
+  id            Int      @id @default(autoincrement())
+  seriesId      Int
+  number        Int      // nro de temporada
+  episodesCount Int      // cantidad de episodios en la temporada
+  year          Int?     // opcional (ej: año de estreno)
+  series        Series   @relation(fields: [seriesId], references: [id])
+  episodes      Episode[]
 
   @@unique([seriesId, number])
 }
 
 model Episode {
-  id            Int    @id @default(autoincrement())
-  seriesId      Int
-  seasonId      Int
-  seasonNumber  Int
-  episodeNumber Int
-  title         String // nombre del capítulo
+  id       Int     @id @default(autoincrement())
+  seasonId Int
+  number   Int      // número de episodio dentro de la temporada
+  name     String   // nombre del capítulo
+  season   Season   @relation(fields: [seasonId], references: [id])
 
-  series Series @relation(fields: [seriesId], references: [id])
-  season Season @relation(fields: [seasonId], references: [id])
-
-  @@unique([seriesId, seasonNumber, episodeNumber])
-  @@index([seriesId, seasonNumber])
-}
-
-model SeriesCast {
-  seriesId Int
-  personId Int
-  role     String? // nombre del personaje (opcional)
-
-  series Series @relation(fields: [seriesId], references: [id])
-  person Person @relation(fields: [personId], references: [id])
-
-  @@id([seriesId, personId])
+  @@unique([seasonId, number]) // evita duplicar episodio en una misma temporada
 }
 
 model Movie {
-  id                 Int         @id @default(autoincrement())
-  name               String
-  releaseYear        Int // año de estreno
+  id                 Int      @id @default(autoincrement())
+  name               String   @unique
+  releaseYear        Int      // año de estreno
   description        String
+  director           String?
+  protagonists       String[]
+  comentarioBM       String?
   originalLanguageId Int
-  originalLanguage   Language    @relation(fields: [originalLanguageId], references: [id])
-  posterUrl          String? // imagen
-  rating             Decimal?    @db.Decimal(3, 1) // puntaje
-  cast               MovieCast[]
+  originalLanguage   Language @relation(fields: [originalLanguageId], references: [id])
+  posterUrl          String?  // imagen
+  rating             Decimal? @db.Decimal(3, 1) // puntaje
   content            Content?
+  genres             Genre[]   @relation("MovieGenres")
 
   @@index([name])
-}
-
-model MovieCast {
-  movieId  Int
-  personId Int
-  role     String?
-
-  movie  Movie  @relation(fields: [movieId], references: [id])
-  person Person @relation(fields: [personId], references: [id])
-
-  @@id([movieId, personId])
 }
 
 model Rating {
   id        Int     @id @default(autoincrement())
   contentId Int
-  clientId  String // ID anónimo (cookie)
+  clientId  String  // ID anónimo (cookie)
   score     Decimal @db.Decimal(3, 1)
 
   content Content @relation(fields: [contentId], references: [id])
