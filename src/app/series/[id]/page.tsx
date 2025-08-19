@@ -1,15 +1,17 @@
-
 import { prisma } from '@/lib/prisma'
 import Image from 'next/image'
 import Link from 'next/link'
 
-type MyPageProps = {
-  params: { id: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-};
 
-export default async function SeriesPage({ params }: MyPageProps) {
-  const seriesId = Number(params.id)
+export default async function SeriesPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+
+}) {
+
+  const { id } = await params
+  const seriesId = Number(id)
 
   const serie = await prisma.series.findUnique({
     where: { id: seriesId },
