@@ -3,7 +3,12 @@ import { prisma } from '@/lib/prisma'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export default async function SeriesPage({ params }: { params: { id: string } }) {
+type MyPageProps = {
+  params: { id: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+};
+
+export default async function SeriesPage({ params }: MyPageProps) {
   const seriesId = Number(params.id)
 
   const serie = await prisma.series.findUnique({
