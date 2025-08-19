@@ -549,6 +549,92 @@ async function main() {
       originalLanguageId: byCode['es'].id,
     },
   });
+
+    // =========================================================
+  //                     SERIES: Mi dulce niña 
+  // =========================================================
+  const MiDulceNiñaSeasonsData = [
+    { number: 1, episodesCount: 6,  year: 2023 },
+  ];
+  const MiDulceNiñaTotalSeasons = MiDulceNiñaSeasonsData.length;
+  const MiDulceNiñaTotalEpisodes = MiDulceNiñaSeasonsData.reduce((acc, s) => acc + s.episodesCount, 0);
+
+  // upsert de la serie
+  const MiDulceNiña = await prisma.series.upsert({
+    where: { name: 'Mi dulce niña' },
+    update: {
+      startYear: 2023,
+      endYear: 2023,
+      description:
+        'El escape de una misteriosa mujer de su angustioso cautiverio orienta a los investigadores hacia la oscura verdad que se esconde tras su desaparición sin resolver 13 años antes.',
+      director: 'Isabel Kleefeld, Julian Pörksen',
+      protagonists: ['Kim Riedle, Naila Schuberth, Sammy Schrein, Hans Löw, Haley Louise Jones'],
+      comentarioBM: 'Una serie muy atrapante, con mucha intriga, muy buena. NOTA-> 8 ',
+      totalSeasons: MiDulceNiñaTotalSeasons,
+      totalEpisodes: MiDulceNiñaTotalEpisodes,
+      originalLanguageId: byCode['de'].id,
+      posterUrl: '/posters/MiDulceNiña.png',
+      rating: 8,
+      genres: {
+        set: [], // limpia relaciones 
+        connect: [
+          { id: genreMap['Drama'].id },
+          { id: genreMap['Suspenso'].id },
+          { id: genreMap['Policial'].id },
+        ],
+      },
+    },
+    create: {
+      name: 'MiDulceNiña',
+      startYear: 2023,
+      endYear: 2023,
+      description:
+        'El escape de una misteriosa mujer de su angustioso cautiverio orienta a los investigadores hacia la oscura verdad que se esconde tras su desaparición sin resolver 13 años antes.',
+      director: 'Isabel Kleefeld, Julian Pörksen',
+      protagonists: ['Kim Riedle, Naila Schuberth, Sammy Schrein, Hans Löw, Haley Louise Jones'],
+      comentarioBM: 'Una serie muy atrapante, con mucha intriga, muy buena. NOTA-> 8 ',
+      totalSeasons: MiDulceNiñaTotalSeasons,
+      totalEpisodes: MiDulceNiñaTotalEpisodes,
+      originalLanguageId: byCode['de'].id,
+      posterUrl: '/posters/MiDulceNiña.png',
+      rating: 8,
+      genres: {
+        connect: [
+          { id: genreMap['Drama'].id },
+          { id: genreMap['Suspenso'].id },
+          { id: genreMap['Policial'].id },
+        ],
+      },
+    },
+  });
+
+  // upsert de Temporadas (usa @@unique([seriesId, number]))
+  for (const s of MiDulceNiñaSeasonsData) {
+    await prisma.season.upsert({
+      where: { seriesId_number: { seriesId: MiDulceNiña.id, number: s.number } },
+      update: { episodesCount: s.episodesCount, year: s.year },
+      create: { seriesId: MiDulceNiña.id, ...s },
+    });
+  }
+
+  // Content para la serie (para grillas)
+  await prisma.content.upsert({
+    where: { seriesId: MiDulceNiña.id },
+    update: {
+      name: MiDulceNiña.name,
+      posterUrl: MiDulceNiña.posterUrl ?? '/posters/MiDulceNiña.png',
+      rating: MiDulceNiña.rating ?? undefined,
+      originalLanguageId: byCode['de'].id,
+    },
+    create: {
+      category: 'SERIES',
+      seriesId: MiDulceNiña.id,
+      name: MiDulceNiña.name,
+      posterUrl: MiDulceNiña.posterUrl ?? '/posters/MiDulceNiña.png',
+      rating: MiDulceNiña.rating ?? undefined,
+      originalLanguageId: byCode['de'].id,
+    },
+  });
   // =========================================================
   //                        MOVIE: INCEPTION
   // =========================================================
