@@ -124,7 +124,7 @@ export const seriesData: SeriesData[] = [
     genres: ['Drama', 'Basada en hechos reales'],
     seasons: [{ number: 1, episodesCount: 8, year: 2024 }],
   },
-    {
+  {
     name: 'Mi dulce niña',
     startYear: 2023,
     endYear: 2023,
@@ -139,4 +139,6 @@ export const seriesData: SeriesData[] = [
     genres: ['Drama', 'Suspenso', 'Policial'],
     seasons: [{ number: 1, episodesCount: 6, year: 2023 }],
   },
+
+
 ];
