@@ -21,7 +21,7 @@ async function main() {
   }
 
   // ---------- Genres ----------
-  const genres = ['Drama', 'Crimen', 'Ciencia Ficción', 'Suspenso', 'Thriller', 'Policial'];
+  const genres = ['Drama', 'Crimen', 'Ciencia Ficción', 'Suspenso', 'Policial'];
   const genreMap: Record<string, { id: number }> = {};
   for (const g of genres) {
     const genre = await prisma.genre.upsert({
@@ -208,7 +208,94 @@ async function main() {
       originalLanguageId: byCode['es'].id,
     },
   });
+// =========================================================
+  //                     SERIES: How to Get Away with Murder
+  // =========================================================
+  const htgawmSeasonsData = [
+    { number: 1, episodesCount: 15,  year: 2015 },
+    { number: 2, episodesCount: 15, year: 2016 },
+    { number: 3, episodesCount: 15, year: 2017 },
+    { number: 4, episodesCount: 15, year: 2018 },
+    { number: 5, episodesCount: 15, year: 2019 },
+     { number: 6, episodesCount: 15, year: 2020 },
+  ];
+  const htgawmTotalSeasons = htgawmSeasonsData.length;
+  const htgawmTotalEpisodes = htgawmSeasonsData.reduce((acc, s) => acc + s.episodesCount, 0);
 
+  // upsert de la serie
+  const htgawm = await prisma.series.upsert({
+    where: { name: 'How to Get Away with Murder' },
+    update: {
+      startYear: 2014,
+      endYear: 2020,
+      description:
+        'Annalise Keating , abogada defensora y profesora de derecho en una prestigiosa universidad de Filadelfia , quien, junto con cinco de sus estudiantes, se ve involucrada en una compleja trama de asesinato',
+      director: '	Peter Nowalk',
+      protagonists: ['	Viola Davis, Billy Brown, Alfredo Enoc, Jack Falahee, Katie Findlay, Aja Naomi King, Matt McGorry, Karla Souza, Charlie Weber, Liza Weil, Conrad Ricamora'],
+      comentarioBM: 'Dentro de mi top 5 de series, una última temporada MUY buena. NOTA-> 9',
+      totalSeasons: htgawmTotalSeasons,
+      totalEpisodes: htgawmTotalEpisodes,
+      originalLanguageId: byCode['en'].id,
+      posterUrl: '/posters/htgawm.png',
+      rating: 9,
+      genres: {
+        set: [], // limpia relaciones 
+        connect: [
+          { id: genreMap['Drama'].id },
+          { id: genreMap['Suspenso'].id },
+        ],
+      },
+    },
+    create: {
+      name: 'How to Get Away with Murder',
+      startYear: 2014,
+      endYear: 2020,
+      description:
+        'Annalise Keating , abogada defensora y profesora de derecho en una prestigiosa universidad de Filadelfia , quien, junto con cinco de sus estudiantes, se ve involucrada en una compleja trama de asesinato',
+      director: '	Peter Nowalk',
+      protagonists: ['	Viola Davis, Billy Brown, Alfredo Enoc, Jack Falahee, Katie Findlay, Aja Naomi King, Matt McGorry, Karla Souza, Charlie Weber, Liza Weil, Conrad Ricamora'],
+      comentarioBM: 'Dentro de mi top 5 de series, una última temporada MUY buena. NOTA-> 9',
+      totalSeasons: htgawmTotalSeasons,
+      totalEpisodes: htgawmTotalEpisodes,
+      originalLanguageId: byCode['en'].id,
+      posterUrl: '/posters/htgawm.png',
+      rating: 9,
+      genres: {
+        connect: [
+          { id: genreMap['Drama'].id },
+          { id: genreMap['Suspenso'].id },
+        ],
+      },
+    },
+  });
+
+  // upsert de Temporadas (usa @@unique([seriesId, number]))
+  for (const s of htgawmSeasonsData) {
+    await prisma.season.upsert({
+      where: { seriesId_number: { seriesId: htgawm.id, number: s.number } },
+      update: { episodesCount: s.episodesCount, year: s.year },
+      create: { seriesId: htgawm.id, ...s },
+    });
+  }
+
+  // Content para la serie (para grillas)
+  await prisma.content.upsert({
+    where: { seriesId: htgawm.id },
+    update: {
+      name: htgawm.name,
+      posterUrl: htgawm.posterUrl ?? '/posters/htgawm.png',
+      rating: htgawm.rating ?? undefined,
+      originalLanguageId: byCode['en'].id,
+    },
+    create: {
+      category: 'SERIES',
+      seriesId: htgawm.id,
+      name: htgawm.name,
+      posterUrl: htgawm.posterUrl ?? '/posters/htgawm.png',
+      rating: htgawm.rating ?? undefined,
+      originalLanguageId: byCode['en'].id,
+    },
+  });
   // =========================================================
   //                        MOVIE: INCEPTION
   // =========================================================

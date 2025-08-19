@@ -1,13 +1,9 @@
-// src/app/series/[id]/page.tsx
+
 import { prisma } from '@/lib/prisma'
 import Image from 'next/image'
 import Link from 'next/link'
 
-interface SeriesPageProps {
-  params: { id: string }
-}
-
-export default async function SeriesPage({ params }: SeriesPageProps) {
+export default async function SeriesPage({ params }: { params: { id: string } }) {
   const seriesId = Number(params.id)
 
   const serie = await prisma.series.findUnique({
