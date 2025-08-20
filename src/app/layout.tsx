@@ -37,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           brandHref="/"
         />
       {children}
+     
       </body>
     </html>
   )

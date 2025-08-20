@@ -41,20 +41,15 @@ export function FilterSelect({
   };
 
   return (
-    <label className={`d-inline-flex flex-column ${className || ''}`}>
-      <span className="mb-1 fw-semibold" style={{ color: 'var(--primary)' }}>
+    <div className={className}>
+      <label className="form-label mb-1 fw-semibold text-primary">
         {label}
-      </span>
-
+      </label>
       <select
+        className="form-select filtro-genero-select"
+        value={value || 'Todos'}
         onChange={handleChange}
-        value={value || current}
-        className="form-select"
-        style={{
-          backgroundColor: 'var(--background)',            // fondo negro
-          color: 'var(--foreground)',                      // texto claro
-          borderColor: 'var(--primary)',                   // borde celeste
-        }}
+        aria-label={label}
       >
         <option value="">Todos</option>
         {options.map((opt) => (
@@ -63,6 +58,6 @@ export function FilterSelect({
           </option>
         ))}
       </select>
-    </label>
+    </div>
   );
 }
