@@ -17,8 +17,12 @@ function shuffle<T>(arr: T[]): T[] {
   return [...arr].sort(() => Math.random() - 0.5);
 }
 
-export default async function MoviesPage({ searchParams }: PageProps) {
-  const generoSeleccionado = searchParams?.genero?.toString() ?? '';
+export default async function MoviesPage({
+   searchParams,
+  }: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+  }) {
+  const generoSeleccionado = (searchParams?.genero as string) ?? '';
 
   const items = await prisma.content.findMany({
     where: { category: 'MOVIE' },
