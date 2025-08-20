@@ -18,10 +18,12 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export default async function SeriesPage({
-   searchParams,
-  }: {
+   params,
+  searchParams,
+}: {
+  params: Record<string, string>;
   searchParams?: { [key: string]: string | string[] | undefined };
-  }) {
+}) {
   const generoSeleccionado = (searchParams?.genero as string) ?? '';
   const items = await prisma.content.findMany({
     where: { category: 'SERIES' },
