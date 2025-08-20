@@ -98,3 +98,21 @@ input:focus, select:focus, textarea:focus {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.filtro-genero-select {
+  background-color: #000;
+  color: #0dcaf0;
+  border: 2px solid #0dcaf0;
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+.filtro-genero-select:focus {
+  border-color: #0dcaf0;
+  box-shadow: 0 0 8px rgba(13, 202, 240, 0.6);
+  outline: none;
+}
+.filtro-genero-select option {
+  background-color: #000;
+  color: #0dcaf0;
+}
+

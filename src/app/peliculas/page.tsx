@@ -2,42 +2,74 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { rateContent } from '@/app/actions/rating';
+import { FilterSelect } from '../components/FiltroGenero';
 
 export const metadata = {
   title: 'Movies',
   description: 'Explorá todas las películas en BMflix',
 };
 
+type PageProps = {
+  searchParams?: { genero?: string };
+};
+
 function shuffle<T>(arr: T[]): T[] {
   return [...arr].sort(() => Math.random() - 0.5);
 }
 
-export default async function MoviesPage() {
+export default async function MoviesPage({ searchParams }: PageProps) {
+  const generoSeleccionado = searchParams?.genero?.toString() ?? '';
+
   const items = await prisma.content.findMany({
     where: { category: 'MOVIE' },
-    include: { movie: true, originalLanguage: true },
+    include: {
+      originalLanguage: true,
+      movie: { include: { genres: true } }, 
+    },
     orderBy: { updatedAt: 'desc' },
   });
 
   const feed = shuffle(items);
 
+  // géneros únicos
+  const generosUnicos = Array.from(
+    new Set(feed.flatMap((c) => c.movie?.genres?.map((g) => g.name) ?? []))
+  ).sort();
+
+  // aplicar filtro
+  const feedFiltrado = generoSeleccionado
+    ? feed.filter((c) =>
+        c.movie?.genres?.some((g) => g.name === generoSeleccionado)
+      )
+    : feed;
+
   return (
     <main className="container py-5">
+      <div className="d-flex align-items-center justify-content-between mb-3">
+        <h2 className="m-0 text-primary">Películas</h2>
+        <FilterSelect
+            label="Filtrar por género:"
+            options={generosUnicos}
+            value={generoSeleccionado}
+            basePath="/peliculas"            
+            paramName="genero"
+            className="ms-3"
+        />
+      </div>
+
       <div className="row g-3">
-        {feed.map((c) => {
+        {feedFiltrado.map((c) => {
           const href = c.movie ? `/peliculas/${c.movie.id}` : '#';
           const title = c.name || c.movie?.name || 'Película';
           const poster = c.posterUrl || '/logo.png';
           const lang = c.originalLanguage?.code?.toUpperCase();
+          const generos = c.movie?.genres?.map((g) => g.name).join(' · ');
 
           return (
             <div key={c.id} className="col-6 col-sm-4 col-md-3 col-lg-2">
               <div className="card h-100 bg-surface border-primary-soft">
                 <Link href={href} className="text-decoration-none">
-                  <div
-                    className="position-relative w-100"
-                    style={{ aspectRatio: '3 / 3' }}
-                  >
+                  <div className="position-relative w-100" style={{ aspectRatio: '3 / 3' }}>
                     <Image
                       src={poster}
                       alt={title}
@@ -49,7 +81,7 @@ export default async function MoviesPage() {
                       className="position-absolute top-0 start-0 m-2 badge"
                       style={{ backgroundColor: 'var(--primary)', color: '#000' }}
                     >
-                      Pelicula
+                      Película
                     </span>
                   </div>
                 </Link>
@@ -61,12 +93,18 @@ export default async function MoviesPage() {
                     </Link>
                   </h6>
 
-                  <small className="text-muted-foreground d-block mb-2">
+                  <small className="text-muted-foreground d-block">
                     {c.rating != null ? `⭐ ${Number(c.rating).toFixed(1)}` : '⭐ —'}
                     {lang ? ` · ${lang}` : ''}
                   </small>
 
-                  <form action={rateContent} className="input-group input-group-sm">
+                  {generos && (
+                    <small className="text-muted-foreground d-block text-truncate">
+                      {generos}
+                    </small>
+                  )}
+
+                  <form action={rateContent} className="input-group input-group-sm mt-2">
                     <input type="hidden" name="id" value={c.id} />
                     <input
                       name="rating"

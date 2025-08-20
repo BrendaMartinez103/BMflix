@@ -2,32 +2,65 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { rateContent } from '@/app/actions/rating';
+import { FilterSelect } from '../components/FiltroGenero';
 
 export const metadata = {
   title: 'Series',
   description: 'Explorá todas las series en BMflix',
 };
 
+type PageProps = {
+  searchParams?: { genero?: string };
+};
+
 function shuffle<T>(arr: T[]): T[] {
   return [...arr].sort(() => Math.random() - 0.5);
 }
 
-export default async function SeriesPage() {
+export default async function SeriesPage({ searchParams }: PageProps) {
+  const generoSeleccionado = searchParams?.genero?.toString() ?? '';
+
   const items = await prisma.content.findMany({
-    where: { category: 'SERIES' }, // 🔹 solo series
-    include: { series: true, originalLanguage: true },
+    where: { category: 'SERIES' },
+    include: {
+      originalLanguage: true,
+      series: { include: { genres: true } }, 
+    },
     orderBy: { updatedAt: 'desc' },
   });
 
   const feed = shuffle(items);
 
+  // Géneros únicos a partir de series.genres
+  const generosUnicos = Array.from(
+    new Set(feed.flatMap((c) => c.series?.genres?.map((g) => g.name) ?? []))
+  ).sort();
+
+  // Aplica filtro si hay género seleccionado
+  const feedFiltrado = generoSeleccionado
+    ? feed.filter((c) => c.series?.genres?.some((g) => g.name === generoSeleccionado))
+    : feed;
+
   return (
     <main className="container py-5">
+      <div className="d-flex align-items-center justify-content-between mb-3">
+        <h2 className="m-0 text-primary">Series</h2>
+
+        <FilterSelect
+          label="Filtrar por género:"
+          options={generosUnicos}
+          value={generoSeleccionado}
+          basePath="/series"              
+          paramName="genero"
+          className="ms-3"
+        />
+      </div>
+
       <div className="row g-3">
-        {feed.map((c) => {
+        {feedFiltrado.map((c) => {
           const href = c.series ? `/series/${c.series.id}` : '#';
           const title = c.name || c.series?.name || 'Serie';
-          const poster = c.posterUrl || '/logo.png';   
+          const poster = c.posterUrl || '/logo.png';
           const lang = c.originalLanguage?.code?.toUpperCase();
 
           return (
