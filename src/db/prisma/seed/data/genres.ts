@@ -7,4 +7,7 @@ export const genres = [
   'Biográfica',
   'Comedia',
   'Basada en hechos reales',
+  'Terror',
+  'Familiar',
+  'Thriller psicológico',
 ] as const;
