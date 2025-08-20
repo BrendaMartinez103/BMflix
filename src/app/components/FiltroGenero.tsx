@@ -5,15 +5,15 @@ import { useMemo } from 'react';
 
 type Props = {
   label?: string;
-  options: string[];          // ej: ["Drama", "Suspenso", ...] (sin "Todos")
-  value?: string;             // valor actual del query (?genero=...)
-  basePath: string;           // ej: "/peliculas" o "/series"
-  paramName?: string;         // por defecto "genero"
+  options: string[];
+  value?: string;
+  basePath: string;           // ej: '/peliculas' o '/series'
+  paramName?: string;         // ej: 'genero'
   className?: string;
 };
 
 export function FilterSelect({
-  label = 'Filtrar por género:',
+  label = 'Filtrar:',
   options,
   value = '',
   basePath,
@@ -23,38 +23,46 @@ export function FilterSelect({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const allOptions = useMemo(() => ['Todos', ...options], [options]);
+  const current = useMemo(() => {
+    const p = new URLSearchParams(searchParams?.toString() || '');
+    return p.get(paramName) ?? '';
+  }, [searchParams, paramName]);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = e.target.value;
-    const params = new URLSearchParams(searchParams?.toString() || '');
-
-    if (!selected || selected === 'Todos') {
-      params.delete(paramName);
+    const v = e.target.value;
+    const p = new URLSearchParams(searchParams?.toString() || '');
+    if (!v) {
+      p.delete(paramName);
     } else {
-      params.set(paramName, selected);
+      p.set(paramName, v);
     }
-
-    router.push(`${basePath}${params.toString() ? `?${params}` : ''}`);
+    const qs = p.toString();
+    router.push(qs ? `${basePath}?${qs}` : basePath);
   };
 
   return (
-    <div className={className}>
-      <label className="form-label mb-1 fw-semibold text-primary">
+    <label className={`d-inline-flex flex-column ${className || ''}`}>
+      <span className="mb-1 fw-semibold" style={{ color: 'var(--primary)' }}>
         {label}
-      </label>
+      </span>
+
       <select
-        className="form-select filtro-genero-select"
-        value={value || 'Todos'}
         onChange={handleChange}
-        aria-label={label}
+        value={value || current}
+        className="form-select"
+        style={{
+          backgroundColor: 'var(--background)',            // fondo negro
+          color: 'var(--foreground)',                      // texto claro
+          borderColor: 'var(--primary)',                   // borde celeste
+        }}
       >
-        {allOptions.map((opt) => (
+        <option value="">Todos</option>
+        {options.map((opt) => (
           <option key={opt} value={opt}>
             {opt}
           </option>
         ))}
       </select>
-    </div>
+    </label>
   );
 }

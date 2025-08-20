@@ -4,49 +4,27 @@ import { prisma } from '@/lib/prisma';
 import { rateContent } from '@/app/actions/rating';
 import { FilterSelect } from '../components/FiltroGenero';
 
-export const metadata = {
-  title: 'Movies',
-  description: 'Explorá todas las películas en BMflix',
-};
-
-type PageProps = {
-  searchParams?: { genero?: string };
-};
-
-function shuffle<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
-}
-
-export default async function MoviesPage({
-  params,
-  searchParams,
-}: {
-  params: Record<string, string>;
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
-  const generoSeleccionado = (searchParams?.genero as string) ?? '';
-
+export default async function MoviesPage({ searchParams }: { searchParams: any }) {
+  const params = await searchParams;  
+  const generoSeleccionado = params?.genero ?? '';
+  
   const items = await prisma.content.findMany({
     where: { category: 'MOVIE' },
     include: {
       originalLanguage: true,
-      movie: { include: { genres: true } }, 
+      movie: { include: { genres: true } },       
     },
     orderBy: { updatedAt: 'desc' },
   });
 
-  const feed = shuffle(items);
+  const feed = [...items].sort(() => Math.random() - 0.5);
 
-  // géneros únicos
   const generosUnicos = Array.from(
     new Set(feed.flatMap((c) => c.movie?.genres?.map((g) => g.name) ?? []))
   ).sort();
 
-  // aplicar filtro
-  const feedFiltrado = generoSeleccionado
-    ? feed.filter((c) =>
-        c.movie?.genres?.some((g) => g.name === generoSeleccionado)
-      )
+  const visibles = generoSeleccionado
+    ? feed.filter((c) => c.movie?.genres?.some((g) => g.name === generoSeleccionado))
     : feed;
 
   return (
@@ -54,22 +32,21 @@ export default async function MoviesPage({
       <div className="d-flex align-items-center justify-content-between mb-3">
         <h2 className="m-0 text-primary">Películas</h2>
         <FilterSelect
-            label="Filtrar por género:"
-            options={generosUnicos}
-            value={generoSeleccionado}
-            basePath="/peliculas"            
-            paramName="genero"
-            className="ms-3"
+          label="Filtrar por género:"
+          options={generosUnicos}
+          value={generoSeleccionado}
+          basePath="/peliculas"
+          paramName="genero"
+          className="ms-3"
         />
       </div>
 
       <div className="row g-3">
-        {feedFiltrado.map((c) => {
+        {visibles.map((c: any) => {
           const href = c.movie ? `/peliculas/${c.movie.id}` : '#';
           const title = c.name || c.movie?.name || 'Película';
           const poster = c.posterUrl || '/logo.png';
           const lang = c.originalLanguage?.code?.toUpperCase();
-          const generos = c.movie?.genres?.map((g) => g.name).join(' · ');
 
           return (
             <div key={c.id} className="col-6 col-sm-4 col-md-3 col-lg-2">
@@ -99,18 +76,12 @@ export default async function MoviesPage({
                     </Link>
                   </h6>
 
-                  <small className="text-muted-foreground d-block">
+                  <small className="text-muted-foreground d-block mb-2">
                     {c.rating != null ? `⭐ ${Number(c.rating).toFixed(1)}` : '⭐ —'}
                     {lang ? ` · ${lang}` : ''}
                   </small>
 
-                  {generos && (
-                    <small className="text-muted-foreground d-block text-truncate">
-                      {generos}
-                    </small>
-                  )}
-
-                  <form action={rateContent} className="input-group input-group-sm mt-2">
+                  <form action={rateContent} className="input-group input-group-sm">
                     <input type="hidden" name="id" value={c.id} />
                     <input
                       name="rating"

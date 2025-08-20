@@ -4,45 +4,26 @@ import { prisma } from '@/lib/prisma';
 import { rateContent } from '@/app/actions/rating';
 import { FilterSelect } from '../components/FiltroGenero';
 
-export const metadata = {
-  title: 'Series',
-  description: 'Explorá todas las series en BMflix',
-};
+export default async function SeriesPage({ searchParams }: { searchParams: any }) {
+  const params = await searchParams;  
+  const generoSeleccionado = params?.genero ?? '';
 
-type PageProps = {
-  searchParams?: { genero?: string };
-};
-
-function shuffle<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
-}
-
-export default async function SeriesPage({
-   params,
-  searchParams,
-}: {
-  params: Record<string, string>;
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
-  const generoSeleccionado = (searchParams?.genero as string) ?? '';
   const items = await prisma.content.findMany({
     where: { category: 'SERIES' },
     include: {
       originalLanguage: true,
-      series: { include: { genres: true } }, 
+      series: { include: { genres: true } },       // <-- asumiendo relation Series.genres
     },
     orderBy: { updatedAt: 'desc' },
   });
 
-  const feed = shuffle(items);
+  const feed = [...items].sort(() => Math.random() - 0.5);
 
-  // Géneros únicos a partir de series.genres
   const generosUnicos = Array.from(
     new Set(feed.flatMap((c) => c.series?.genres?.map((g) => g.name) ?? []))
   ).sort();
 
-  // Aplica filtro si hay género seleccionado
-  const feedFiltrado = generoSeleccionado
+  const visibles = generoSeleccionado
     ? feed.filter((c) => c.series?.genres?.some((g) => g.name === generoSeleccionado))
     : feed;
 
@@ -50,19 +31,18 @@ export default async function SeriesPage({
     <main className="container py-5">
       <div className="d-flex align-items-center justify-content-between mb-3">
         <h2 className="m-0 text-primary">Series</h2>
-
         <FilterSelect
           label="Filtrar por género:"
           options={generosUnicos}
           value={generoSeleccionado}
-          basePath="/series"              
+          basePath="/series"
           paramName="genero"
           className="ms-3"
         />
       </div>
 
       <div className="row g-3">
-        {feedFiltrado.map((c) => {
+        {visibles.map((c: any) => {
           const href = c.series ? `/series/${c.series.id}` : '#';
           const title = c.name || c.series?.name || 'Serie';
           const poster = c.posterUrl || '/logo.png';
@@ -72,10 +52,7 @@ export default async function SeriesPage({
             <div key={c.id} className="col-6 col-sm-4 col-md-3 col-lg-2">
               <div className="card h-100 bg-surface border-primary-soft">
                 <Link href={href} className="text-decoration-none">
-                  <div
-                    className="position-relative w-100"
-                    style={{ aspectRatio: '3 / 3' }}
-                  >
+                  <div className="position-relative w-100" style={{ aspectRatio: '3 / 3' }}>
                     <Image
                       src={poster}
                       alt={title}
