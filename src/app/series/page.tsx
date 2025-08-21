@@ -2,31 +2,49 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { rateContent } from '@/app/actions/rating';
-import Pagination from '@/app/components/Pagination'
+import Pagination from '@/app/components/Pagination';
 import { FilterSelect } from '../components/FiltroGenero';
 
-export default async function SeriesPage({ searchParams }: { searchParams: any }) {
-  const params = await searchParams;  
-  const generoSeleccionado = params?.genero ?? '';
+type PageProps = {
+  searchParams: Promise<{ page?: string; genero?: string }>;
+};
 
-  const items = await prisma.content.findMany({
-    where: { category: 'SERIES' },
-    include: {
-      originalLanguage: true,
-      series: { include: { genres: true } },       // <-- asumiendo relation Series.genres
-    },
-    orderBy: { updatedAt: 'desc' },
-  });
+export default async function SeriesPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const page = Math.max(1, Number(params.page ?? '1') || 1);
+  const generoSeleccionado = (params.genero ?? '').toString();
 
-  const feed = [...items].sort(() => Math.random() - 0.5);
+  const pageSize = 16;
 
+  // where dinámico (categoría + opcional género)
+  const where: any = { category: 'SERIES' };
+  if (generoSeleccionado) {
+    where.series = { genres: { some: { name: generoSeleccionado } } };
+  }
+
+  // total + página
+  const [total, visibles] = await Promise.all([
+    prisma.content.count({ where }),
+    prisma.content.findMany({
+      where,
+      include: {
+        originalLanguage: true,
+        series: { include: { genres: true } },
+      },
+      orderBy: { updatedAt: 'desc' },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+    }),
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  // géneros para el select (solo nombres)
   const generosUnicos = Array.from(
-    new Set(feed.flatMap((c) => c.series?.genres?.map((g) => g.name) ?? []))
+    new Set(
+      visibles.flatMap((c) => c.series?.genres?.map((g) => g.name) ?? [])
+    )
   ).sort();
-
-  const visibles = generoSeleccionado
-    ? feed.filter((c) => c.series?.genres?.some((g) => g.name === generoSeleccionado))
-    : feed;
 
   return (
     <main className="container py-5">
@@ -43,7 +61,7 @@ export default async function SeriesPage({ searchParams }: { searchParams: any }
       </div>
 
       <div className="row g-3">
-        {visibles.map((c: any) => {
+        {visibles.map((c) => {
           const href = c.series ? `/series/${c.series.id}` : '#';
           const title = c.name || c.series?.name || 'Serie';
           const poster = c.posterUrl || '/logo.png';
@@ -104,6 +122,13 @@ export default async function SeriesPage({ searchParams }: { searchParams: any }
           );
         })}
       </div>
+
+      <Pagination
+        basePath="/series"
+        currentPage={page}
+        totalPages={totalPages}
+        extraParams={generoSeleccionado ? { genero: generoSeleccionado } : undefined}
+      />
     </main>
   );
 }

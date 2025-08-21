@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
-import Pagination from '@/app/components/Pagination'
+import Pagination from '@/app/components/Pagination';
 import { rateContent } from '@/app/actions/rating';
 
 export const metadata = {
@@ -9,16 +9,26 @@ export const metadata = {
   description: 'Explorá todo el contenido de BMflix',
 };
 
-function shuffle<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
-}
+type PageProps = {
+  searchParams: Promise<{ page?: string }>;
+};
 
-export default async function PeliculasSeriesPage() {
-  const items = await prisma.content.findMany({
-    include: { series: true, movie: true, originalLanguage: true },
-    orderBy: { updatedAt: 'desc' },
-  });
-  const feed = shuffle(items);
+export default async function PeliculasSeriesPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const page = Math.max(1, Number(params.page ?? '1') || 1);
+  const pageSize = 16;
+
+  const [total, feed] = await Promise.all([
+    prisma.content.count(),
+    prisma.content.findMany({
+      include: { series: true, movie: true, originalLanguage: true },
+      orderBy: { updatedAt: 'desc' },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+    }),
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
     <main className="container py-5">
@@ -26,12 +36,8 @@ export default async function PeliculasSeriesPage() {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="m-0 text-primary">Explorá contenido</h2>
         <div className="btn-group">
-          <Link href="/peliculas" className="btn btn-primary">
-            🎬 Películas
-          </Link>
-          <Link href="/series" className="btn btn-outline-primary">
-            📺 Series
-          </Link>
+          <Link href="/peliculas" className="btn btn-primary">🎬 Películas</Link>
+          <Link href="/series" className="btn btn-outline-primary">📺 Series</Link>
         </div>
       </div>
 
@@ -97,9 +103,7 @@ export default async function PeliculasSeriesPage() {
                       className="form-control form-control-sm bg-dark text-light border-primary"
                       aria-label="Puntaje"
                     />
-                    <button type="submit" className="btn btn-primary">
-                      Puntuar
-                    </button>
+                    <button type="submit" className="btn btn-primary">Puntuar</button>
                   </form>
                 </div>
               </div>
@@ -107,6 +111,12 @@ export default async function PeliculasSeriesPage() {
           );
         })}
       </div>
+
+      <Pagination
+        basePath="/peliculas-series" 
+        currentPage={page}
+        totalPages={totalPages}
+      />
     </main>
   );
 }
