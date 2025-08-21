@@ -16,7 +16,7 @@ export default async function MoviesPage({ searchParams }: PageProps) {
   const page = Math.max(1, Number(params.page ?? '1') || 1)
   const generoSeleccionado = (params.genero ?? '').toString()
 
-  const pageSize = 16
+  const pageSize = 18
 
   const where: any = { category: 'MOVIE' }
   if (generoSeleccionado) {

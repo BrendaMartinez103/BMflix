@@ -16,7 +16,7 @@ type PageProps = {
 export default async function PeliculasSeriesPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const page = Math.max(1, Number(params.page ?? '1') || 1);
-  const pageSize = 16;
+  const pageSize = 18;
 
   const [total, feed] = await Promise.all([
     prisma.content.count(),
