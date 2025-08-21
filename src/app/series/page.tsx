@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { rateContent } from '@/app/actions/rating';
+import Pagination from '@/app/components/Pagination'
 import { FilterSelect } from '../components/FiltroGenero';
 
 export default async function SeriesPage({ searchParams }: { searchParams: any }) {

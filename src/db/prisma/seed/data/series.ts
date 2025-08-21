@@ -7,7 +7,7 @@ export type SeriesData = {
   director?: string | null;
   protagonists?: string[];
   comentarioBM?: string | null;
-  lang: 'en' | 'es' | 'ko' | 'zh' | 'de';
+  lang: 'en' | 'es' | 'ko' | 'zh' | 'de' | 'sv' | 'da' | 'th' | 'ja';
   posterUrl?: string | null;
   rating?: number | null;
   genres: string[];              
@@ -131,14 +131,43 @@ export const seriesData: SeriesData[] = [
     description:
        'El escape de una misteriosa mujer de su angustioso cautiverio orienta a los investigadores hacia la oscura verdad que se esconde tras su desaparición sin resolver 13 años antes.',
     director: 'Isabel Kleefeld, Julian Pörksen',
-    protagonists: ['Kim Riedle, Naila Schuberth, Sammy Schrein, Hans Löw, Haley Louise Jones'],
-    comentarioBM: 'Una serie muy atrapante, con mucha intriga, muy buena. NOTA-> 8 ',
+    protagonists: ['Kim Riedle', 'Naila Schuberth', 'Sammy Schrein', 'Hans Löw', 'Haley Louise Jones'],
+    comentarioBM: 'Una serie muy atrapante, con mucha intriga, muy buena. NOTA-> 8.0 ',
     lang: 'de',
     posterUrl: '/posters/MiDulceNiña.png',
-    rating: 8,
+    rating: 8.0,
     genres: ['Drama', 'Suspenso', 'Policial'],
     seasons: [{ number: 1, episodesCount: 6, year: 2023 }],
   },
+  {
+      name: 'La cúpula de cristal',
+      startYear: 2025,
+      endYear: 2025,
+      description:
+        'Cuando la hija de su amiga desaparece, la criminóloga Lejla se une a la búsqueda, lo que la lleva a enfrentar el trauma persistente de su propio secuestro cuando era niña.',
+      director: 'Camilla Läckberg',
+      protagonists: ['Léonie Vincent', 'Johan Hedenberg', 'Johan Rheborg'],
+      comentarioBM: 'Muy entretenida, con mucho suspenso y un final atrapante e inesperado. NOTA-> 8.2 ',
+      lang: 'sv',
+      posterUrl: '/posters/la-cupula.png',
+      rating: 8.2,
+      genres: ['Drama', 'Suspenso', 'Policial'],
+      seasons: [{ number: 1, episodesCount: 6, year: 2025 }],
+    },
 
-
+    {
+      name: 'Los secretos que ocultamos',
+      startYear: 2025,
+      endYear: 2025,
+      description:
+        'Cuando la au pair de una vecina desaparece de su lujoso suburbio, Cecilie busca respuestas y descubre secretos que hacen añicos su mundo aparentemente perfecto.',
+      director: 'Ingeborg Topsøe',
+      protagonists: ['Marie Bach Hansen', 'Excel Busano', 'Danica Curcic'],
+      comentarioBM: 'Una serie muy atrapante, con un trasfondo y analisis muy interesante. NOTA-> 8.4 ',
+      lang: 'da',
+      posterUrl: '/posters/los-secretos.png',
+      rating: 8.4,
+      genres: ['Drama', 'Suspenso', 'Policial'],
+      seasons: [{ number: 1, episodesCount: 6, year: 2025 }],
+    },
 ];

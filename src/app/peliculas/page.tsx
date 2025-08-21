@@ -1,31 +1,51 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { prisma } from '@/lib/prisma';
-import { rateContent } from '@/app/actions/rating';
-import { FilterSelect } from '../components/FiltroGenero';
+import Link from 'next/link'
+import Image from 'next/image'
+import { prisma } from '@/lib/prisma'
+import { rateContent } from '@/app/actions/rating'
+import Pagination from '@/app/components/Pagination'
+import { FilterSelect } from '../components/FiltroGenero'
 
-export default async function MoviesPage({ searchParams }: { searchParams: any }) {
-  const params = await searchParams;  
-  const generoSeleccionado = params?.genero ?? '';
-  
-  const items = await prisma.content.findMany({
-    where: { category: 'MOVIE' },
-    include: {
-      originalLanguage: true,
-      movie: { include: { genres: true } },       
-    },
-    orderBy: { updatedAt: 'desc' },
-  });
+type PageProps = {
 
-  const feed = [...items].sort(() => Math.random() - 0.5);
+  searchParams: Promise<{ page?: string; genero?: string }>
+}
 
+export default async function MoviesPage({ searchParams }: PageProps) {
+
+  const params = await searchParams
+  const page = Math.max(1, Number(params.page ?? '1') || 1)
+  const generoSeleccionado = (params.genero ?? '').toString()
+
+  const pageSize = 16
+
+  const where: any = { category: 'MOVIE' }
+  if (generoSeleccionado) {
+    where.movie = { genres: { some: { name: generoSeleccionado } } }
+  }
+
+  // count + page
+  const [total, visibles] = await Promise.all([
+    prisma.content.count({ where }),
+    prisma.content.findMany({
+      where,
+      include: {
+        originalLanguage: true,
+        movie: { include: { genres: true } },
+      },
+      orderBy: { updatedAt: 'desc' },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+    }),
+  ])
+
+  const totalPages = Math.max(1, Math.ceil(total / pageSize))
+
+  // géneros para el select
   const generosUnicos = Array.from(
-    new Set(feed.flatMap((c) => c.movie?.genres?.map((g) => g.name) ?? []))
-  ).sort();
-
-  const visibles = generoSeleccionado
-    ? feed.filter((c) => c.movie?.genres?.some((g) => g.name === generoSeleccionado))
-    : feed;
+    new Set(
+      visibles.flatMap((c) => c.movie?.genres?.map((g) => g.name) ?? [])
+    )
+  ).sort()
 
   return (
     <main className="container py-5">
@@ -43,10 +63,10 @@ export default async function MoviesPage({ searchParams }: { searchParams: any }
 
       <div className="row g-3">
         {visibles.map((c: any) => {
-          const href = c.movie ? `/peliculas/${c.movie.id}` : '#';
-          const title = c.name || c.movie?.name || 'Película';
-          const poster = c.posterUrl || '/logo.png';
-          const lang = c.originalLanguage?.code?.toUpperCase();
+          const href = c.movie ? `/peliculas/${c.movie.id}` : '#'
+          const title = c.name || c.movie?.name || 'Película'
+          const poster = c.posterUrl || '/logo.png'
+          const lang = c.originalLanguage?.code?.toUpperCase()
 
           return (
             <div key={c.id} className="col-6 col-sm-4 col-md-3 col-lg-2">
@@ -100,9 +120,16 @@ export default async function MoviesPage({ searchParams }: { searchParams: any }
                 </div>
               </div>
             </div>
-          );
+          )
         })}
       </div>
+
+      <Pagination
+        basePath="/peliculas"
+        currentPage={page}
+        totalPages={totalPages}
+         extraParams={generoSeleccionado ? { genero: generoSeleccionado } : undefined}
+      />
     </main>
-  );
+  )
 }

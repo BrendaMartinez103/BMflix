@@ -118,3 +118,35 @@ input:focus, select:focus, textarea:focus {
   background-color: #000;
   color: #0dcaf0;
 }
+
+.page-item.active .page-link {
+  background-color: #000 !important;   /* fondo negro */
+  border-color: #0dcaf0 !important;    /* borde celeste */
+  color: #0dcaf0 !important;           /* texto celeste */
+}
+
+
+.pg-btn {
+  background: var(--background) !important;
+  color: var(--primary) !important;
+  border: 1px solid var(--primary) !important;
+  border-radius: 10px !important;
+  padding: 6px 14px !important;
+  text-decoration: none !important;
+}
+.pg-btn:hover {
+  box-shadow: 0 0 8px rgba(13, 202, 240, .4) !important;
+}
+.pg-chip {
+  background: var(--background) !important;
+  color: var(--primary) !important;
+  border: 1px solid var(--primary) !important;
+  border-radius: 10px !important;
+  padding: 6px 10px !important;
+  min-width: 36px;
+  text-align: center;
+}
+.pg-disabled {
+  opacity: .5;
+  pointer-events: none;
+}

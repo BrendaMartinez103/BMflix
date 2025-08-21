@@ -168,5 +168,32 @@ export const moviesData: MovieData[] = [
     rating: 9.0,
     genres: ['Comedia', 'Familiar'],
   },
+  {
+    name: 'Jaula',
+    releaseYear: 2022,
+    description:
+      'Paula se encuentra a una niña traumatizada de la que no se sabe nada. Ahora, intenta descifrar su extraño comportamiento para averiguar su identidad y su oscuro pasado.',
+    director: 'Ignacio Tatay',
+    protagonists: ['	Elena Anaya','Pablo Molinero','Carlos Santos','Eva Llorach','Esther Acebo','Eloy Azorín', 'Eva Tennear'],
+    comentarioBM: 'Una pelicula muy entretenida, llena de suspenso. NOTA-> 8.1',
+    lang: 'es',
+    posterUrl: '/posters/jaula.png',
+    rating: 8.1,
+    genres: ['Policial', 'Drama', 'Suspenso', 'Crimen'],
+  },
+
+  {
+    name: 'Perdido en la montaña',
+    releaseYear: 2024,
+    description:
+      'Una caminata familiar se transforma en una odisea de supervivencia de nueve días cuando, durante una fuerte tormenta, un chico de 12 años se pierde en la montaña más alta de Maine.',
+    director: 'Andrew Kightlinger',
+    protagonists: ['Luke David Blumm', 'Paul Sparks', 'Caitlin Fitzgerald'],
+    comentarioBM: 'Una pelicula muy emocionante  y más siendo que relata una historia real. NOTA-> 7.9',
+    lang: 'en',
+    posterUrl: '/posters/perdido-en-la-mont.png',
+    rating: 7.9,
+    genres: ['Basada en hechos reales', 'Drama', 'Suspenso'],
+  },
 ];
 
