@@ -14,4 +14,7 @@ export const genres = [
   'Emotiva',
   'Antología',
   'Documental',
+  'Crimen real',
+  'Romance',
+  'Comedia negra',
 ] as const;

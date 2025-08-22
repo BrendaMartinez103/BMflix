@@ -7,7 +7,7 @@ export type SeriesData = {
   director?: string | null;
   protagonists?: string[];
   comentarioBM?: string | null;
-  lang: 'en' | 'es' | 'ko' | 'zh' | 'de' | 'sv' | 'da' | 'th' | 'ja';
+  lang: 'en' | 'es' | 'ko' | 'zh' | 'de' | 'sv' | 'da' | 'th' | 'ja'| 'fr';
   posterUrl?: string | null;
   rating?: number | null;
   genres: string[];              
@@ -931,7 +931,7 @@ export const seriesData: SeriesData[] = [
   lang: 'en',
   posterUrl: '/posters/los-juicios-de-gabriel-fernandez.png',
   rating: 7.4,
-  genres: ['Documental', 'Crimen'],
+  genres: ['Documental', 'Crimen real'],
   seasons: [{ number: 1, episodesCount: 6, year: 2020 }],
 },
 ];
