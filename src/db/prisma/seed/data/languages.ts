@@ -9,5 +9,6 @@ export const languages = [
   { code: 'th', name: 'ไทย' },         // Tailandés
   { code: 'ja', name: '日本語' },       // Japonés
   { code: 'fr', name: 'Français' },     // Francés
+  { code: 'no', name: 'Norsk' },        // Noruego
 ] as const;
 

@@ -5,7 +5,7 @@ export type MovieData = {
   director?: string | null;
   protagonists?: string[];
   comentarioBM?: string | null;
-  lang: 'en' | 'es' | 'ko' | 'zh' | 'de' | 'sv' | 'da' | 'th' | 'ja'| 'fr';
+  lang: 'en' | 'es' | 'ko' | 'zh' | 'de' | 'sv' | 'da' | 'th' | 'ja'| 'fr'| 'no';
   posterUrl?: string | null;
   rating?: number | null;
   genres: string[];
@@ -546,6 +546,122 @@ export const moviesData: MovieData[] = [
   rating: 6.5,
   genres: ['Terror'],
 },
-
+{
+  name: 'Punto rojo',
+  releaseYear: 2021,
+  description:
+    'Una pareja en crisis intenta reavivar su relación con una escapada romántica, pero en medio de las montañas nevadas se convierten en el blanco de francotiradores desconocidos.',
+  director: 'Alain Darborg',
+  protagonists: ['Nanna Blondell', 'Anastasios Soulis'],
+  comentarioBM: 'Aburrida, esperaba mas. NOTA-> 4.0',
+  lang: 'sv',
+  posterUrl: '/posters/punto-rojo.png',
+  rating: 4.0,
+  genres: ['Suspenso'],
+},
+{
+  name: 'La ballena',
+  releaseYear: 2022,
+  description:
+    'Un profesor de inglés con obesidad mórbida intenta reconectar con su hija adolescente en una última oportunidad de redención.',
+  director: 'Darren Aronofsky',
+  protagonists: ['Brendan Fraser', 'Sadie Sink', 'Hong Chau'],
+  comentarioBM: 'Muy triste esta historia, pero me gustó como se desarrolló, Brendan Fraser impecable. NOTA-> 8.8',
+  lang: 'en',
+  posterUrl: '/posters/la-ballena.png',
+  rating: 8.8,
+  genres: ['Drama'],
+},
+{
+  name: 'El hoyo',
+  releaseYear: 2019,
+  description:
+    'En una prisión vertical, los reclusos son alimentados por una plataforma descendente. Los de arriba disfrutan mientras los de abajo luchan por sobrevivir.',
+  director: 'Galder Gaztelu-Urrutia',
+  protagonists: ['Iván Massagué', 'Zorion Eguileor'],
+  comentarioBM: 'Novedosa, original, metáfora social muy bien lograda, me gustó. NOTA-> 7.9',
+  lang: 'es',
+  posterUrl: '/posters/el-hoyo.png',
+  rating: 7.9,
+  genres: ['Ciencia Ficción', 'Suspenso'],
+},
+{
+  name: 'El hoyo 2',
+  releaseYear: 2024,
+  description:
+    'La secuela de la aclamada distopía española regresa a la plataforma, donde nuevos prisioneros intentan sobrevivir a la brutal jerarquía.',
+  director: 'Galder Gaztelu-Urrutia',
+  protagonists: ['Milena Smit', 'Hovik Keuchkerian'],
+  comentarioBM: 'No hay comparacion con la primera, en esta se equivocaron. NOTA-> 4.2',
+  lang: 'es',
+  posterUrl: '/posters/el-hoyo-2.png',
+  rating: 4.2,
+  genres: ['Ciencia Ficción', 'Suspenso'],
+},
+{
+  name: 'Secret Obsession',
+  releaseYear: 2019,
+  description:
+    'Tras perder la memoria en un accidente, una mujer es cuidada por un hombre que dice ser su esposo… pero las apariencias engañan.',
+  director: 'Peter Sullivan',
+  protagonists: ['Brenda Song', 'Mike Vogel', 'Dennis Haysbert'],
+  comentarioBM: null,
+  lang: 'en',
+  posterUrl: '/posters/secret-obsession.png',
+  rating: 7.2,
+  genres: ['Suspenso', 'Thriller psicológico', 'Drama'],
+},
+{
+  name: 'Búsqueda implacable',
+  releaseYear: 2008,
+  description:
+    'Un exagente de la CIA debe rescatar a su hija secuestrada en Europa por una red de trata de personas.',
+  director: 'Pierre Morel',
+  protagonists: ['Liam Neeson', 'Maggie Grace', 'Famke Janssen'],
+  comentarioBM: 'Clásico del cine de acción, Liam Neeson brillante. NOTA-> 8.4',
+  lang: 'en',
+  posterUrl: '/posters/busqueda-implacable.png',
+  rating: 8.4,
+  genres: ['Acción', 'Suspenso'],
+},
+{
+  name: 'Descansar en paz',
+  releaseYear: 2024,
+  description:
+    'USergio se enfrenta a graves problemas económicos y al deterioro de su salud. En un giro del destino, podría asegurar el futuro de su familia ¿El costo? Desaparecer... para siempre.',
+  director: 'Sebastián Borensztein',
+  protagonists: ['Joaquín Furriel', 'Griselda Siciliani'],
+  comentarioBM: 'Tenían una gran historia que no supieron aprovechar, entretenida pero el final lo arruinó. NOTA-> 6.4',
+  lang: 'es',
+  posterUrl: '/posters/descansar-en-paz.png',
+  rating: 6.4,
+  genres: ['Drama', 'Suspenso'],
+},
+{
+  name: 'Identidad desbloqueada',
+  releaseYear: 2023,
+  description:
+    'Una joven pierde su celular y comienza a ser acosada por alguien que obtuvo acceso a toda su información personal.',
+  director: 'Kim Tae-joon',
+  protagonists: ['Chun Woo-hee', 'Im Si-wan'],
+  comentarioBM: 'Entretenida, hasta ahí. NOTA-> 6.7',
+  lang: 'ko',
+  posterUrl: '/posters/identidad-desbloqueada.png',
+  rating: 6.7,
+  genres: ['Suspenso', 'Crimen', 'Drama'],
+},
+{
+  name: '¿Qué hizo Jennifer?',
+  releaseYear: 2023,
+  description:
+    'Docuserie que analiza el controvertido caso Jennifer Pan y el asesinato de su madre en Canadá.',
+  director: 'Jenny Popplewell',
+  protagonists: ['Jennifer Pan'],
+  comentarioBM: 'No me gustó, no hay una trama interesante, ni factor sorpresa. NOTA-> 4.6',
+  lang: 'en',
+  posterUrl: '/posters/jennifer.png',
+  rating: 4.6,
+  genres: ['Documental', 'Crimen real'],
+},
 ];
 
