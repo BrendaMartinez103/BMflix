@@ -12,4 +12,6 @@ export const genres = [
   'Thriller psicológico',
   'Acción',
   'Emotiva',
+  'Antología',
+  'Documental',
 ] as const;
