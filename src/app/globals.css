@@ -76,11 +76,36 @@ input:focus, select:focus, textarea:focus {
 
 /* Offcanvas */
 .offcanvas {
-  background-color: var(--background);
+  --bs-offcanvas-bg: #000 !important;   
+  --bs-offcanvas-color: #0dcaf0 !important;
+  background-color: #000 !important;    
+  color: #0dcaf0 !important;
+  opacity: 1 !important;
+  backdrop-filter: none !important;
 }
 
+/* Backdrop nativo de Bootstrap totalmente opaco */
+.offcanvas-backdrop.show {
+  background-color: #000 !important;
+  opacity: 1 !important;
+}
+
+/* Enlaces del menú dentro del offcanvas */
 .offcanvas .nav-link {
   color: #0dcaf0 !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.offcanvas .nav-link:hover {
+  background-color: rgba(13, 202, 240, 0.12);
+  border-radius: 6px;
+}
+
+/* Botón cerrar visible en fondo oscuro */
+.offcanvas .btn-close {
+  filter: invert(1);
+  opacity: 1;
 }
 
 
@@ -157,3 +182,56 @@ input:focus, select:focus, textarea:focus {
 .border-primary-soft {
   border-color: rgba(13, 202, 240, .25) !important;
 }
+/* Drawer (offcanvas) 100% negro y opaco */
+.drawer-bm {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(85vw, 360px);
+  background: #000 !important;           /* <- sólido */
+  color: #0dcaf0 !important;
+  border-left: 1px solid #0dcaf0;
+  z-index: 1045;
+  transform: translateX(100%);
+  transition: transform .25s ease;
+}
+.drawer-bm.show {
+  transform: translateX(0);
+}
+
+/* Drawer (offcanvas) 100% negro y opaco */
+.drawer-bm {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: min(85vw, 360px);
+  background: #000 !important;    /* sólido */
+  color: #0dcaf0 !important;
+  border-left: 1px solid #0dcaf0;
+  z-index: 1045;
+  transform: translateX(100%);
+  transition: transform .25s ease;
+}
+.drawer-bm.show { transform: translateX(0); }
+
+/* Backdrop negro sólido */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: #000 !important;   
+  opacity: 1 !important;
+  z-index: 1040;
+}
+
+.drawer-bm .nav-link {
+  color: #0dcaf0 !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.drawer-bm .nav-link:hover {
+  background-color: rgba(13, 202, 240, 0.12);
+  border-radius: 6px;
+}
+
+.drawer-bm .btn-close { filter: invert(1); opacity: 1; }

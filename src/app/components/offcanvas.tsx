@@ -4,26 +4,16 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 
-interface OffcanvasNavbarProps {
-  brandName?: string
-  brandHref?: string
-}
-
 export default function OffcanvasNavbar({
   brandName = 'BMflix',
   brandHref = '/',
-}: OffcanvasNavbarProps) {
+}: { brandName?: string; brandHref?: string }) {
   const [isOpen, setIsOpen] = useState(false)
-
-  const toggleOffcanvas = () => setIsOpen((v) => !v)
+  const toggleOffcanvas = () => setIsOpen(v => !v)
   const closeOffcanvas = () => setIsOpen(false)
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
+    document.body.style.overflow = isOpen ? 'hidden' : ''
     const onEsc = (e: KeyboardEvent) => e.key === 'Escape' && closeOffcanvas()
     window.addEventListener('keydown', onEsc)
     return () => {
@@ -43,23 +33,19 @@ export default function OffcanvasNavbar({
   return (
     <>
       {/* Topbar */}
-      <div className="py-2" style={{ background: 'rgba(0,0,0,.8)' }}>
+      <div className="py-2" style={{ background: '#000' }}>
         <div className="container d-flex justify-content-between align-items-center">
           <p className="mb-0 small fw-medium text-primary">BMflix</p>
         </div>
       </div>
 
       {/* Navbar */}
-      <nav
-        className="navbar navbar-expand-lg sticky-top py-3"
-        style={{ background: 'rgba(0,0,0,.6)', backdropFilter: 'blur(6px)' }}
-      >
+      <nav className="navbar navbar-expand-lg sticky-top py-3" style={{ background: '#000' }}>
         <div className="container">
           <Link href={brandHref} className="navbar-brand fw-bold text-primary">
             {brandName}
           </Link>
 
-          {/* Toggler (mobile) */}
           <button
             className="btn d-lg-none text-primary"
             onClick={toggleOffcanvas}
@@ -70,7 +56,6 @@ export default function OffcanvasNavbar({
             <Menu size={22} />
           </button>
 
-          {/* Menú en desktop */}
           <div className="collapse navbar-collapse d-none d-lg-flex align-items-center justify-content-center w-100 h-100">
             <ul className="nav flex-row flex-nowrap mb-0 justify-content-center w-100 text-center align-items-center h-100">
               {navigationItems.map((item) => (
@@ -83,69 +68,59 @@ export default function OffcanvasNavbar({
             </ul>
           </div>
         </div>
-
-        {/* Overlay (mobile) */}
-        {isOpen && (
-          <button
-            aria-label="Cerrar menú"
-            className="position-fixed top-0 start-0 w-100 h-100 border-0 p-0"
-            style={{ background: 'rgba(0,0,0,.6)', zIndex: 1040 }}
-            onClick={closeOffcanvas}
-          />
-        )}
-
-        {/* Offcanvas (mobile) */}
-        <aside
-          id="offcanvas-menu"
-          role="dialog"
-          aria-modal={isOpen}
-          className={`offcanvas offcanvas-end show ${isOpen ? 'd-block' : 'd-none'}`}
-          tabIndex={-1}
-          style={{
-            visibility: isOpen ? 'visible' : 'hidden',
-            zIndex: 1045,
-            width: 'min(85vw, 360px)',
-            backgroundColor: 'var(--background)',
-            borderLeft: '1px solid var(--primary)',
-          }}
-        >
-          <div
-            className="d-flex align-items-center justify-content-between px-3 py-3 border-bottom"
-            style={{ borderColor: 'rgba(13,202,240,.25)' }}
-          >
-            <h5 className="mb-0 text-primary">Menú</h5>
-            <button
-              type="button"
-              className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
-              onClick={closeOffcanvas}
-            >
-              <X size={16} />
-              Cerrar
-            </button>
-          </div>
-
-          <div className="offcanvas-body d-flex flex-column px-0">
-            <ul className="nav flex-column mb-0">
-              {navigationItems.map((item) => (
-                <li
-                  key={item.label}
-                  className="nav-item py-2 px-3 border-bottom"
-                  style={{ borderColor: 'rgba(13,202,240,.15)' }}
-                >
-                  <Link
-                    href={item.href}
-                    className="nav-link text-uppercase"
-                    onClick={closeOffcanvas}
-                    style={{ color: 'var(--foreground)' }}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </aside>
       </nav>
+
+      {/* Overlay negro sólido */}
+      {isOpen && (
+        <button
+          aria-label="Cerrar menú"
+          className="drawer-backdrop border-0 p-0"
+          onClick={closeOffcanvas}
+        />
+      )}
+
+      {/* Drawer negro sólido */}
+      <aside
+        id="offcanvas-menu"
+        role="dialog"
+        aria-modal={isOpen}
+        className={`drawer-bm ${isOpen ? 'show' : ''}`}
+      >
+        <div
+          className="d-flex align-items-center justify-content-between px-3 py-3 border-bottom"
+          style={{ borderColor: 'rgba(13,202,240,.25)' }}
+        >
+          <h5 className="mb-0 text-primary">Menú</h5>
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
+            onClick={closeOffcanvas}
+          >
+            <X size={16} />
+            Cerrar
+          </button>
+        </div>
+
+        <div className="offcanvas-body d-flex flex-column px-0">
+          <ul className="nav flex-column mb-0">
+            {navigationItems.map((item) => (
+              <li
+                key={item.label}
+                className="nav-item py-2 px-3 border-bottom"
+                style={{ borderColor: 'rgba(13,202,240,.15)' }}
+              >
+                <Link
+                  href={item.href}
+                  className="nav-link text-uppercase"
+                  onClick={closeOffcanvas}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
     </>
   )
 }
