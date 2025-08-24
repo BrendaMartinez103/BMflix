@@ -18,16 +18,17 @@ export default async function PeliculasSeriesPage({ searchParams }: PageProps) {
   const page = Math.max(1, Number(params.page ?? '1') || 1);
   const pageSize = 18;
 
-  const [total, feed] = await Promise.all([
+  const [total, items] = await Promise.all([
     prisma.content.count(),
     prisma.content.findMany({
       include: { series: true, movie: true, originalLanguage: true },
-      orderBy: { updatedAt: 'desc' },
+      orderBy: { updatedAt: 'desc' }, 
       take: pageSize,
       skip: (page - 1) * pageSize,
     }),
   ]);
 
+  const feed = [...items].sort(() => Math.random() - 0.5);
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
@@ -36,7 +37,7 @@ export default async function PeliculasSeriesPage({ searchParams }: PageProps) {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="m-0 text-primary">Explorá contenido</h2>
         <div className="btn-group">
-          <Link href="/peliculas" className="btn btn-primary">🎬 Películas</Link>
+          <Link href="/peliculas" className="btn btn-outline-primary">🎬 Películas</Link>
           <Link href="/series" className="btn btn-outline-primary">📺 Series</Link>
         </div>
       </div>

@@ -109,8 +109,8 @@ export default async function MoviesPage({
 
       {/* BOTÓN VOLVER */}
       <div className="mt-4">
-        <Link href="/series" className="btn btn-outline-primary">
-          ← Volver a Series
+        <Link href="/peliculas" className="btn btn-outline-primary">
+          ← Volver a Peliculas
         </Link>
       </div>
     </main>
