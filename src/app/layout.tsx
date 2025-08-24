@@ -7,26 +7,32 @@ import OffcanvasNavbar from './components/offcanvas'
 export const metadata = {
   metadataBase: new URL('https://bmflix.vercel.app'),
   title: 'BMflix',
-  description: 'App con Bootstrap y Next.js',
+  description: 'Tu guía para elegir películas y series',
+  icons: {
+    icon: '/favicon.ico',
+  },
   openGraph: {
     title: 'BMflix',
     description: '📺 Tu guía para elegir la próxima maratón.',
-    url: 'https://tusitio.vercel.app',
+    url: 'https://bmflix.vercel.app',
     siteName: 'BMflix',
     images: [
       {
-        url: '/og-image.png', // 👈 tu logo o imagen de preview
+        url: '/og-image.png', 
         width: 1200,
         height: 630,
       },
     ],
     type: 'website',
   },
-   icons: {
-    icon: '/favicon.ico',  
+  twitter: {
+    card: 'summary_large_image',
+    title: 'BMflix',
+    description: '📺 Tu guía para elegir la próxima maratón.',
+    images: ['/og-image.png'],
   },
-
 }
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 
   return (
