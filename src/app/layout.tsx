@@ -8,28 +8,25 @@ export const metadata = {
   metadataBase: new URL('https://bmflix.vercel.app'),
   title: 'BMflix',
   description: 'Tu guía para elegir películas y series',
-  icons: {
-    icon: '/favicon.ico',
-  },
   openGraph: {
-    title: 'BMflix',
-    description: '📺 Tu guía para elegir la próxima maratón.',
-    url: 'https://bmflix.vercel.app',
-    siteName: 'BMflix',
     images: [
       {
-        url: '/og-image.png', 
-        width: 1200,
-        height: 630,
+        url: URL + '/logo.png',
+        width: 800,
+        height: 600,
+      },
+      {
+        url: URL + '/logo.png',
+        width: 1800,
+        height: 1600,
       },
     ],
+    locale: 'es_AR',
     type: 'website',
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'BMflix',
-    description: '📺 Tu guía para elegir la próxima maratón.',
-    images: ['/og-image.png'],
+  icons: {
+    shortcut: URL + '/favicon.ico',
+    icon: '/favicon.ico',
   },
 }
 
