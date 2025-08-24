@@ -58,12 +58,15 @@ input:focus, select:focus, textarea:focus {
   background:var(--background) !important;
   border-bottom:1px solid var(--border);
 }
-.navbar-bm .nav-link{
-  color:var(--foreground) !important;
-  letter-spacing:.02em;
+/* Tipografía de enlaces del navbar */
+.navbar .nav-link {
+  color: var(--foreground);
+  opacity: .9;
 }
-.navbar-bm .nav-link:hover{ color:var(--primary) !important; }
-
+.navbar .nav-link:hover {
+  color: var(--primary);
+  opacity: 1;
+}
 /* Top bar */
 .topbar-bm{
   background:var(--surface);
@@ -72,13 +75,14 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* Offcanvas */
-.offcanvas-bm{
-  background:var(--surface);
-  color:var(--foreground);
-  border-left:1px solid var(--border);
+.offcanvas {
+  background-color: var(--background);
 }
-.offcanvas-bm .nav-link{ color:var(--foreground); }
-.offcanvas-bm .nav-link:hover{ color:var(--primary); }
+
+.offcanvas .nav-link {
+  color: #0dcaf0 !important;
+}
+
 
 /* Botón cierre */
 .btn-close{
@@ -149,4 +153,7 @@ input:focus, select:focus, textarea:focus {
 .pg-disabled {
   opacity: .5;
   pointer-events: none;
+}
+.border-primary-soft {
+  border-color: rgba(13, 202, 240, .25) !important;
 }
