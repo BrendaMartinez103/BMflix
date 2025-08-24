@@ -242,3 +242,8 @@ input:focus, select:focus, textarea:focus {
 }
 .rank-card .card-body { padding: .5rem .6rem; }
 .rank-title { font-size: .95rem; line-height: 1.2; }
+
+.card.border-primary-soft {
+  border-color: rgba(13, 202, 240, .25) !important;
+  background: #0d0d0d;
+}
