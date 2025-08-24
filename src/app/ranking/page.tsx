@@ -80,16 +80,16 @@ export default async function RankingPage() {
   const Card = ({ c, pos }: { c: any; pos: number }) => {
     const { href, title, poster, lang, ratingNum, categoryBadge } = getItemBasics(c)
     return (
-      <div className="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <div className="card h-100 bg-surface border-primary-soft">
+      <div className="col-6 col-sm-4 col-md-3 col-lg-2"> 
+        <div className="card h-100 bg-surface border-primary-soft rank-card">
           <Link href={href} className="text-decoration-none">
-            <div className="position-relative w-100" style={{ aspectRatio: '2 / 3' }}>
+            <div className="rank-poster position-relative w-100">
               <Image
                 src={poster}
                 alt={title}
                 fill
                 className="object-cover rounded-top"
-                sizes="(max-width: 768px) 50vw, 20vw"
+                sizes="(max-width: 576px) 50vw, (max-width: 992px) 25vw, 16vw"
               />
               <span
                 className="position-absolute top-0 start-0 m-2 badge"
@@ -104,7 +104,7 @@ export default async function RankingPage() {
           </Link>
 
           <div className="card-body py-2">
-            <h6 className="card-title m-0 text-truncate">
+            <h6 className="card-title m-0 text-truncate rank-title">
               <Link href={href} className="text-primary text-decoration-none">
                 {title}
               </Link>
@@ -119,7 +119,6 @@ export default async function RankingPage() {
       </div>
     )
   }
-
   const Grid = ({ title, items }: { title: string; items: any[] }) => (
     <section className="mb-5">
       <div className="d-flex align-items-center justify-content-between mb-3">
