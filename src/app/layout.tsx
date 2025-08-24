@@ -9,20 +9,21 @@ export const metadata = {
   title: 'BMflix',
   description: 'App con Bootstrap y Next.js',
   openGraph: {
+    title: 'BMflix',
+    description: '📺 Tu guía para elegir la próxima maratón.',
+    url: 'https://tusitio.vercel.app',
+    siteName: 'BMflix',
     images: [
       {
-        url: URL + '/logo.png',
-        width: 800,
-        height: 600,
-      },
-      {
-        url: URL + '/logo.png',
-        width: 1800,
-        height: 1600,
+        url: '/og-image.png', // 👈 tu logo o imagen de preview
+        width: 1200,
+        height: 630,
       },
     ],
-    locale: 'es_AR',
     type: 'website',
+  },
+   icons: {
+    icon: '/favicon.ico',  
   },
 
 }
