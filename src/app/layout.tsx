@@ -1,7 +1,7 @@
-import type { Metadata } from 'next'
 import OffcanvasNavbar from './components/offcanvas'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './globals.css'
+import type { Metadata, Viewport } from 'next'
 
 const SITE_URL = 'https://bmflix.vercel.app'
 const V = 'v=6' 
@@ -35,6 +35,7 @@ export const metadata: Metadata = {
     images: [`/og-image.png?${V}`],
   },
 }
+export const viewport: Viewport = { themeColor: '#000000' }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -44,6 +45,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" type="image/png" sizes="32x32" href={`/favicon-32x32.png?${V}`} />
         <link rel="icon" type="image/png" sizes="16x16" href={`/favicon-16x16.png?${V}`} />
         <link rel="apple-touch-icon" href={`/apple-touch-icon.png?${V}`} />
+         {/* manifest PWA */}
+        <link rel="manifest" href="/manifest.webmanifest" />
+        {/* iOS standalone mejorado */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
       </head>
       <body>
         <OffcanvasNavbar
