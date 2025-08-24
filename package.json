@@ -20,6 +20,7 @@
     "bootstrap": "^5.3.7",
     "lucide-react": "^0.539.0",
     "next": "latest",
+    "next-pwa": "^5.6.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
@@ -34,6 +35,6 @@
   },
   "prisma": {
     "schema": "src/db/prisma/schema.prisma",
-     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} src/db/prisma/seed/index.ts"
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} src/db/prisma/seed/index.ts"
   }
 }
