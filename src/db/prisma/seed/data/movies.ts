@@ -663,5 +663,18 @@ export const moviesData: MovieData[] = [
   rating: 4.6,
   genres: ['Documental', 'Crimen real'],
 },
+{
+  name: 'Nahir',
+  releaseYear: 2024,
+  description:
+    'Basado en uno de los casos policiacos más conmovedores de crímenes reales en Argentina en los últimos años.En 2018, Nahir Galarza (Valentina Zenere), de 19 años, se convirtió en la mujer más joven en ser condenada a cadena perpetua en el país. Fue acusada y condenada por asesinar a su novio.',
+  director: 'Hernán Guerschuny',
+  protagonists: ['Valentina Zenere', 'Simón Hempe'],
+  comentarioBM: null,
+  lang: 'es',
+  posterUrl: '/posters/nahir.png',
+  rating: 5.4,
+  genres: ['Crimen real', 'Drama'],
+},
 ];
 

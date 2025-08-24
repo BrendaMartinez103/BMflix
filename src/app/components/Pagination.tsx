@@ -8,7 +8,6 @@ type PaginationProps = {
   basePath: string;
   currentPage: number;
   totalPages: number;
-  /** parámetros extra opcionales que van en la query */
   extraParams?: ExtraParams; 
 };
 
@@ -20,9 +19,7 @@ export default function Pagination({
 }: PaginationProps) {
   const mkHref = (page: number) => {
     const qs = new URLSearchParams();
-    // page
     qs.set('page', String(page));
-    // otros parámetros
     Object.entries(extraParams).forEach(([k, v]) => {
       if (v !== undefined && v !== '') qs.set(k, String(v));
     });

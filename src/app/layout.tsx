@@ -2,7 +2,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css'; 
 import type React from 'react'
-import type { Metadata } from 'next'
 import OffcanvasNavbar from './components/offcanvas'
 
 export const metadata = {

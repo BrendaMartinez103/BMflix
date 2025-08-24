@@ -1,19 +1,19 @@
-/* Reset básico y tipografía */
+
 html, body {
-  background-color: #000; /* Fondo negro */
-  color: #d0f0ff;         /* Texto celeste claro */
+  background-color: #000; 
+  color: #d0f0ff;         
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
 }
 
-/* Links */
+
 a {
-  color: #00cfff; /* Celeste brillante */
+  color: #00cfff; 
   text-decoration: none;
 }
 a:hover {
-  color: #66e0ff; /* Celeste más claro en hover */
+  color: #66e0ff; 
   text-decoration: underline;
 }
 
@@ -120,9 +120,9 @@ input:focus, select:focus, textarea:focus {
 }
 
 .page-item.active .page-link {
-  background-color: #000 !important;   /* fondo negro */
-  border-color: #0dcaf0 !important;    /* borde celeste */
-  color: #0dcaf0 !important;           /* texto celeste */
+  background-color: #000 !important;   
+  border-color: #0dcaf0 !important;   
+  color: #0dcaf0 !important;         
 }
 
 

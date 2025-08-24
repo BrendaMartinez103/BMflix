@@ -56,20 +56,20 @@ export default async function SeriesPage({
     <main className="container py-5">
       {/* FILA PRINCIPAL */}
       <div className="row g-4">
-        {/* Col izquierda: Poster + info breve debajo */}
+        {/* Col izquierda: Poster + info abajo */}
         <div className="col-md-4">
           <div className="mb-3">
             <Image
               src={poster}
               alt={serie.name}
-              width={340}     // tamaño similar al de tu captura, sin zoom
+              width={340}     
               height={200}
               className="img-fluid rounded shadow w-100"
               style={{ height: 'auto' }}
             />
           </div>
 
-          {/* Info debajo del poster (exacto como pediste) */}
+          {/* Info debajo del poster */}
           <div className="mt-3">
             <p className="mb-1">
               <strong>Idioma original:</strong> {lang}
@@ -133,7 +133,7 @@ export default async function SeriesPage({
                     {season.year ? ` (${season.year})` : ''}
                   </span>
 
-                  {/* Episodios CELESTE (texto y borde) */}
+                  {/* Episodios */}
                   <span
                     className="badge rounded-pill"
                     style={{

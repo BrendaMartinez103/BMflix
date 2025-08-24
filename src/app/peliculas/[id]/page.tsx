@@ -2,7 +2,6 @@ import { prisma } from '@/lib/prisma'
 import Image from 'next/image'
 import Link from 'next/link'
 
-
 export default async function MoviesPage({
   params,
 }: {
@@ -47,20 +46,20 @@ export default async function MoviesPage({
     <main className="container py-5">
       {/* FILA PRINCIPAL */}
       <div className="row g-4">
-        {/* Col izquierda: Poster + info breve debajo */}
+        {/* Col izquierda: Poster + info abajo */}
         <div className="col-md-4">
           <div className="mb-3">
             <Image
               src={poster}
               alt={movie.name}
-              width={340}     // tamaño similar al de tu captura, sin zoom
+              width={340}   
               height={200}
               className="img-fluid rounded shadow w-100"
               style={{ height: 'auto' }}
             />
           </div>
 
-          {/* Info debajo del poster (exacto como pediste) */}
+          {/* Info debajo del poster */}
           <div className="mt-3">
             <p className="mb-1">
               <strong>Idioma original:</strong> {lang}

@@ -13,16 +13,13 @@ export default async function SeriesPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const page = Math.max(1, Number(params.page ?? '1') || 1);
   const generoSeleccionado = (params.genero ?? '').toString();
-
   const pageSize = 18;
 
-  // where dinámico (categoría + opcional género)
   const where: any = { category: 'SERIES' };
   if (generoSeleccionado) {
     where.series = { genres: { some: { name: generoSeleccionado } } };
   }
 
-  // total + página
   const [total, visibles] = await Promise.all([
     prisma.content.count({ where }),
     prisma.content.findMany({
@@ -39,7 +36,6 @@ export default async function SeriesPage({ searchParams }: PageProps) {
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
-  // géneros para el select (solo nombres)
   const generosUnicos = Array.from(
     new Set(
       visibles.flatMap((c) => c.series?.genres?.map((g) => g.name) ?? [])
