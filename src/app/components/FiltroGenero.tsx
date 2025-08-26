@@ -1,57 +1,64 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useCallback, startTransition } from 'react';
 
 type Props = {
   label?: string;
   options: string[];
-  value?: string;
-  basePath: string;           // ej: '/peliculas' o '/series'
-  paramName?: string;         // ej: 'genero'
+  value?: string;         
+  basePath: string;       // /peliculas o /series
+  paramName?: string;     // genero
   className?: string;
+  allLabel?: string;      // Todos
 };
 
 export function FilterSelect({
   label = 'Filtrar:',
   options,
-  value = '',
+  value,
   basePath,
   paramName = 'genero',
   className,
+  allLabel = 'Todos',
 }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const current = useMemo(() => {
-    const p = new URLSearchParams(searchParams?.toString() || '');
-    return p.get(paramName) ?? '';
-  }, [searchParams, paramName]);
+  const selected =
+    value ?? (searchParams?.get(paramName) ?? '');
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const v = e.target.value;
-    const p = new URLSearchParams(searchParams?.toString() || '');
-    if (!v) {
-      p.delete(paramName);
-    } else {
-      p.set(paramName, v);
-    }
-    const qs = p.toString();
-    router.push(qs ? `${basePath}?${qs}` : basePath);
-  };
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const next = e.target.value; 
+      const p = new URLSearchParams(searchParams?.toString() || '');
+
+      if (!next) p.delete(paramName);
+      else p.set(paramName, next);
+
+      const qs = p.toString();
+      startTransition(() => {
+        router.push(qs ? `${basePath}?${qs}` : basePath);
+      });
+    },
+    [searchParams, router, basePath, paramName]
+  );
+
+  const id = `filter-${paramName}`;
 
   return (
     <div className={className}>
-      <label className="form-label mb-1 fw-semibold text-primary">
+      <label className="form-label mb-1 fw-semibold text-primary" htmlFor={id}>
         {label}
       </label>
       <select
+        id={id}
         className="form-select filtro-genero-select"
-        value={value || 'Todos'}
+        value={selected}            
         onChange={handleChange}
         aria-label={label}
       >
-        <option value="">Todos</option>
+        <option value="">{allLabel}</option>
         {options.map((opt) => (
           <option key={opt} value={opt}>
             {opt}

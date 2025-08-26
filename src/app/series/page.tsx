@@ -10,37 +10,37 @@ type PageProps = {
 };
 
 export default async function SeriesPage({ searchParams }: PageProps) {
-  const params = await searchParams;
-  const page = Math.max(1, Number(params.page ?? '1') || 1);
-  const generoSeleccionado = (params.genero ?? '').toString();
-  const pageSize = 18;
+  const params = await searchParams
+  const page = Math.max(1, Number(params.page ?? '1') || 1)
+  const generoSeleccionado = (params.genero ?? '').toString()
 
-  const where: any = { category: 'SERIES' };
+  const pageSize = 18
+
+  const seriesGenreOptions = await prisma.genre.findMany({
+    where: { series: { some: {} } },
+    orderBy: { name: 'asc' },
+  })
+  const generoOptions = seriesGenreOptions.map(g => g.name)
+
+  const where: any = { category: 'SERIES' }
   if (generoSeleccionado) {
-    where.series = { genres: { some: { name: generoSeleccionado } } };
+    where.series = { genres: { some: { name: generoSeleccionado } } }
   }
 
-  const [total, visibles] = await Promise.all([
-    prisma.content.count({ where }),
-    prisma.content.findMany({
-      where,
-      include: {
-        originalLanguage: true,
-        series: { include: { genres: true } },
-      },
-      orderBy: { updatedAt: 'desc' },
-      take: pageSize,
-      skip: (page - 1) * pageSize,
-    }),
-  ]);
+  const total = await prisma.content.count({ where })
+  const totalPages = Math.max(1, Math.ceil(total / pageSize))
+  const safePage = Math.min(page, totalPages)
 
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
-
-  const generosUnicos = Array.from(
-    new Set(
-      visibles.flatMap((c) => c.series?.genres?.map((g) => g.name) ?? [])
-    )
-  ).sort();
+  const visibles = await prisma.content.findMany({
+    where,
+    include: {
+      originalLanguage: true,
+      series: { include: { genres: true } },
+    },
+    orderBy: { updatedAt: 'desc' },
+    take: pageSize,
+    skip: (safePage - 1) * pageSize,
+  })
 
   return (
     <main className="container py-5">
@@ -48,7 +48,7 @@ export default async function SeriesPage({ searchParams }: PageProps) {
         <h2 className="m-0 text-primary">Series</h2>
         <FilterSelect
           label="Filtrar por género:"
-          options={generosUnicos}
+          options={generoOptions}
           value={generoSeleccionado}
           basePath="/series"
           paramName="genero"
@@ -121,7 +121,7 @@ export default async function SeriesPage({ searchParams }: PageProps) {
 
       <Pagination
         basePath="/series"
-        currentPage={page}
+        currentPage={safePage}                         
         totalPages={totalPages}
         extraParams={generoSeleccionado ? { genero: generoSeleccionado } : undefined}
       />

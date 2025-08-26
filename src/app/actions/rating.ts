@@ -24,10 +24,17 @@ export async function rateContent(formData: FormData) {
     _avg: { score: true },
   });
 
-  await prisma.content.update({
+  const updated = await prisma.content.update({
     where: { id: contentId },
     data: { rating: avg._avg.score ?? null },
+    select: { category: true, movieId: true, seriesId: true },
   });
 
   revalidatePath('/peliculas-series');
+  if (updated.category === 'MOVIE' && updated.movieId) {
+    revalidatePath(`/peliculas/${updated.movieId}`, 'page');
+  }
+  if (updated.category === 'SERIES' && updated.seriesId) {
+    revalidatePath(`/series/${updated.seriesId}`, 'page');
+  }
 }

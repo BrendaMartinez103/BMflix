@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import Image from 'next/image'
 import Link from 'next/link'
-
+import BackButton from '@/app/components/BackButton'
 
 export default async function SeriesPage({
   params,
@@ -38,6 +38,7 @@ export default async function SeriesPage({
     : '/logo.png'
 
   const ratingNumber = serie.rating != null ? Number(serie.rating) : null
+  const communityScore = serie.content?.rating ?? null
   const lang = serie.originalLanguage
     ? `${serie.originalLanguage.name} (${serie.originalLanguage.code.toUpperCase()})`
     : '—'
@@ -75,9 +76,23 @@ export default async function SeriesPage({
               <strong>Idioma original:</strong> {lang}
             </p>
             <p className="mb-1">
-              <strong>Puntaje:</strong>{' '}
-              {ratingNumber != null ? `⭐ ${ratingNumber.toFixed(1)} / 10` : '⭐ —'}
+                <strong>Puntaje BM:</strong>{' '}
+                {ratingNumber != null ? (
+                  <span style={{ color: '#0dcaf0' }}>★</span>
+                ) : (
+                  '★ —'
+                )}{' '}
+                {ratingNumber?.toFixed(1)} / 10
             </p>
+              <p className="mb-1">
+                <strong>Puntaje Comunidad:</strong>{' '}
+                {communityScore != null ? (
+                  <span style={{ color: 'gold' }}>★</span>
+                ) : (
+                  '★ —'
+                )}{' '}
+                {communityScore?.toFixed(1)} / 10
+              </p>
             {genreNames.length > 0 && (
               <p className="mb-1">
                 <strong>Géneros:</strong> {genreNames.join(' · ')}
@@ -169,9 +184,7 @@ export default async function SeriesPage({
 
       {/* BOTÓN VOLVER */}
       <div className="mt-4">
-        <Link href="/series" className="btn btn-outline-primary">
-          ← Volver a Series
-        </Link>
+        <BackButton />
       </div>
     </main>
   )

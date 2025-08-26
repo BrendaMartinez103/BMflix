@@ -3,8 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './globals.css'
 import type { Metadata, Viewport } from 'next'
 
-const SITE_URL = 'https://bmflix.vercel.app'
-const V = 'v=6' 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://bmflix.vercel.app'
+const V = 'v=6'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

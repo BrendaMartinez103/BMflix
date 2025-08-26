@@ -6,7 +6,6 @@ import Pagination from '@/app/components/Pagination'
 import { FilterSelect } from '../components/FiltroGenero'
 
 type PageProps = {
-
   searchParams: Promise<{ page?: string; genero?: string }>
 }
 
@@ -18,34 +17,31 @@ export default async function MoviesPage({ searchParams }: PageProps) {
 
   const pageSize = 18
 
+  const movieGenreOptions = await prisma.genre.findMany({
+    where: { movies: { some: {} } },
+    orderBy: { name: 'asc' },
+  })
+  const generoOptions = movieGenreOptions.map(g => g.name)
+
   const where: any = { category: 'MOVIE' }
   if (generoSeleccionado) {
     where.movie = { genres: { some: { name: generoSeleccionado } } }
   }
 
-  // count + page
-  const [total, visibles] = await Promise.all([
-    prisma.content.count({ where }),
-    prisma.content.findMany({
-      where,
-      include: {
-        originalLanguage: true,
-        movie: { include: { genres: true } },
-      },
-      orderBy: { updatedAt: 'desc' },
-      take: pageSize,
-      skip: (page - 1) * pageSize,
-    }),
-  ])
-
+  const total = await prisma.content.count({ where })
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
+  const safePage = Math.min(page, totalPages)
 
-  // géneros para el select
-  const generosUnicos = Array.from(
-    new Set(
-      visibles.flatMap((c) => c.movie?.genres?.map((g) => g.name) ?? [])
-    )
-  ).sort()
+  const visibles = await prisma.content.findMany({
+    where,
+    include: {
+      originalLanguage: true,
+      movie: { include: { genres: true } },
+    },
+    orderBy: { updatedAt: 'desc' },
+    take: pageSize,
+    skip: (safePage - 1) * pageSize,
+  })
 
   return (
     <main className="container py-5">
@@ -53,7 +49,7 @@ export default async function MoviesPage({ searchParams }: PageProps) {
         <h2 className="m-0 text-primary">Películas</h2>
         <FilterSelect
           label="Filtrar por género:"
-          options={generosUnicos}
+          options={generoOptions}
           value={generoSeleccionado}
           basePath="/peliculas"
           paramName="genero"
@@ -126,9 +122,9 @@ export default async function MoviesPage({ searchParams }: PageProps) {
 
       <Pagination
         basePath="/peliculas"
-        currentPage={page}
+        currentPage={safePage}                         
         totalPages={totalPages}
-         extraParams={generoSeleccionado ? { genero: generoSeleccionado } : undefined}
+        extraParams={generoSeleccionado ? { genero: generoSeleccionado } : undefined}
       />
     </main>
   )

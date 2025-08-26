@@ -97,7 +97,7 @@ export default async function RecomendacionesPage() {
     <main className="container py-5">
       <div className="mb-4">
         <h1 className="m-0 text-primary">Mis recomendaciones</h1>
-        <p className="text-muted mt-1">
+         <p className="mb-3 text-muted-foreground" style={{ lineHeight: 1.6 }}>
           Este ranking usa <strong>mi opinion y puntuacion personal</strong>, Para ver el top de la gente dirigirse a la pestaña de ranking.
         </p>
       </div>

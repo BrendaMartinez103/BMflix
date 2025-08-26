@@ -40,7 +40,7 @@ export default function Home() {
           📺 Tu guía para elegir la próxima maratón. Donde las historias reciben tu puntaje.
         </p>
 
-        {/* CTA / accesos rápidos */}
+        {/* accesos rápidos */}
         <div className="d-flex gap-2 justify-content-center mt-3">
           <Link href="/peliculas" className="btn btn-outline-primary">
             🎬 Películas
