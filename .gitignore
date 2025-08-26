@@ -49,3 +49,30 @@ next-env.d.ts
 
 certificates
 /src/generated/prisma
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDEs
+.idea/
+*.iml
+
+# Cache
+.cache/
+.parcel-cache/
+turbo/
+
+# Prisma
+prisma/dev.db
+prisma/dev.db-journal
+
+# Build artefacts
+*.local
+
+/public/sw.js
+/public/workbox-*.js
