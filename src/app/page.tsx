@@ -54,7 +54,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Bio / Sobre mí */}
+      {/*Sobre mí */}
       <section className="container mb-5">
         <div
           className="card border-primary-soft shadow-sm mx-auto"
@@ -114,8 +114,8 @@ export default function Home() {
                   </p>
                   <p className="mb-4 text-muted-foreground" style={{ lineHeight: 1.6 }}>
                     Si no sabés qué mirar, visitá el{' '}
-                    <Link href="/ranking" className="text-primary">Ranking</Link> para ver lo mejor puntuado,
-                    o sorprendete con la pestaña de{' '}
+                    <Link href="/ranking" className="text-primary">Ranking</Link> para ver lo mejor puntuado por la comunidad,
+                    o mi top personal en {' '}
                     <Link href="/recomendaciones" className="text-primary">Recomendaciones</Link>.
                     ¡Que lo disfruten, amigos cinéfilos!
                   </p>

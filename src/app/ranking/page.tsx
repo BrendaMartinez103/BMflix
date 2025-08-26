@@ -62,21 +62,6 @@ export default async function RankingPage() {
     getTopByCategory('MOVIE'),
   ])
 
-  const Medal = ({ pos }: { pos: number }) => {
-    const emoji = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : `#${pos}`
-    return (
-      <span
-        className="badge"
-        style={{
-          backgroundColor: 'var(--primary)',
-          color: '#000',
-        }}
-      >
-        {emoji}
-      </span>
-    )
-  }
-
   const Card = ({ c, pos }: { c: any; pos: number }) => {
     const { href, title, poster, lang, ratingNum, categoryBadge } = getItemBasics(c)
     return (
@@ -96,9 +81,6 @@ export default async function RankingPage() {
                 style={{ backgroundColor: 'var(--primary)', color: '#000' }}
               >
                 {categoryBadge}
-              </span>
-              <span className="position-absolute top-0 end-0 m-2">
-                <Medal pos={pos} />
               </span>
             </div>
           </Link>
@@ -124,15 +106,11 @@ export default async function RankingPage() {
       <div className="d-flex align-items-center justify-content-between mb-3">
         <h2 className="m-0 text-primary">{title}</h2>
       </div>
-      {items.length === 0 ? (
-        <p className="text-muted">No hay datos suficientes aún.</p>
-      ) : (
         <div className="row g-3">
           {items.map((c, i) => (
             <Card key={c.id} c={c} pos={i + 1} />
           ))}
         </div>
-      )}
     </section>
   )
 
