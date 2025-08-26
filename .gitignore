@@ -20,7 +20,7 @@ out/
 
 # production
 /build
-
+/dist
 # Sistema operativo
 .DS_Store
 Thumbs.db
