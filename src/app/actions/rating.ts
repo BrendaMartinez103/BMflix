@@ -31,6 +31,7 @@ export async function rateContent(formData: FormData) {
   });
 
   revalidatePath('/peliculas-series');
+  revalidatePath('/ranking')
   if (updated.category === 'MOVIE' && updated.movieId) {
     revalidatePath(`/peliculas/${updated.movieId}`, 'page');
   }
